@@ -87,7 +87,8 @@
     "whitespace": [
       true,
       "check-module"
-    ]
+    ],
+    "one-line": false
   },
   "rulesDirectory": [
     "codelyzer"

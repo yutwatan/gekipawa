@@ -1,1 +1,288 @@
-<p>add-team works!</p>
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12 text-center">
+      <h1 class="display-4">劇空間へっぽこリーグ！</h1>
+      <h2>新規登録</h2>
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="addTeamForm" (ngSubmit)="add()" novalidate>
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-md-6" id="team_attributes">
+        <div class="form-row">
+          <div class="form-group">
+            <h4>☆ チーム情報設定 ☆</h4>
+            <dl class="row mb-0">
+              <dt class="col-md-3 text-md-right">チームの名前</dt>
+              <dd class="col-md-9 text-md-left">
+                <input type="text" name="team_name" placeholder="全角6文字まで"
+                       formControlName="teamName" required minlength maxlength>
+              </dd>
+              <dt class="col-md-3 text-md-right">アイコン</dt>
+              <dd class="col-md-9 text-md-left">
+                <input type="text" name="icon" formControlName="icon" readonly required>
+                <button type="button" class="btn btn-secondary ml-2" data-toggle="modal" data-target="#icon_modal">
+                  アイコンの選択
+                </button>
+              </dd>
+              <dt class="col-md-3 text-md-right">監督名</dt>
+              <dd class="col-md-9 text-md-left">
+                <input type="text" name="owner_name" placeholder="全角5文字まで"
+                       formControlName="owner" required minlength maxlength>
+              </dd>
+              <dt class="col-md-3 text-md-right">パスワード</dt>
+              <dd class="col-md-9 text-md-left">
+                <input type="password" name="password"
+                       formControlName="password" required minlength maxlength>
+              </dd>
+              <dt class="col-md-3 text-md-right">タイプ</dt>
+              <dd class="col-md-8 text-md-left table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                  <tr>
+                    <th>攻撃</th>
+                    <th>バント</th>
+                    <th>盗塁</th>
+                    <th>データ</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>
+                      <select name="team_type_attack" formControlName="typeAttack" required>
+                        <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                                [value]="i" [selected]="i == typeAttack.value">{{i}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select name="team_type_bunt" formControlName="typeBunt" required>
+                        <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                                [value]="i" [selected]="i == typeBunt.value">{{i}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select name="team_type_steal" formControlName="typeSteal" required>
+                        <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                                [value]="i" [selected]="i == typeSteal.value">{{i}}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select name="team_type_mind" formControlName="typeMind" required>
+                        <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                                [value]="i" [selected]="i == typeMind.value">{{i}}</option>
+                      </select>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6" id="team_params">
+        <div class="form-row">
+          <div class="form-group">
+            <h4>☆ 選手能力値の決め方 ☆</h4>
+            <ul class="row">
+              <li class="col-sm-12">
+                <dl class="row mb-2">
+                  <dt class="col-sm-12">各選手の各パラメータは 1 〜 10</dt>
+                  <dd class="mb-0"></dd>
+                </dl>
+              </li>
+              <li class="col-sm-12">
+                <dl class="row mb-2">
+                  <dt class="col-sm-12">各選手能力値の小計は 10 〜 28</dt>
+                  <dd class="mb-0"></dd>
+                </dl>
+              </li>
+              <li class="col-sm-12">
+                <dl class="row mb-2">
+                  <dt class="col-sm-8">チーム全体の合計は 360</dt>
+                  <dd class="col-sm-4 mb-0">
+                    現在：
+                    <input type="text" name="team_total" size="4" class="ro_param text-right" readonly
+                           formControlName="teamTotal" required>
+                  </dd>
+                </dl>
+              </li>
+              <li class="col-sm-12">
+                <dl class="row mb-2">
+                  <dt class="col-sm-8">パラメータ 10 の数は 2 つまで</dt>
+                  <dd class="col-sm-4 mb-0">
+                    現在：
+                    <input type="text" name="param_10" size="2" class="ro_param text-right" readonly
+                           formControlName="param10" required>
+                  </dd>
+                </dl>
+              </li>
+              <li class="col-sm-12">
+                <dl class="row mb-0">
+                  <dt class="col-sm-8">パラメータ 8 〜 9 の数は 6 つまで</dt>
+                  <dd class="col-sm-4 mb-0">
+                    現在：
+                    <input type="text" name="param_8_9" size="2" class="ro_param text-right" readonly
+                           formControlName="param8and9" required>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <button type="submit" id="sign_up" class="btn btn-info mr-2" [disabled]="addTeamForm.invalid">登録</button>
+            <a class="btn btn-success mr-2" routerLink="/" role="button">キャンセル</a>
+          </div>
+        </div>
+        <div class="form-row">
+          <div *ngIf="addTeamForm.dirty && (playerDataArray.invalid || farmPlayerDataArray.invalid || pitcherDataArray.invalid || addTeamForm.invalid)">
+            <div class="alert alert-danger" role="alert">
+              Error: 不正なデータがあります{{addTeamForm.errors}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-md-12 text-center" id="player_data">
+        <div class="form-row">
+          <div class="form-group table-responsive">
+            <h4>☆ 選手情報設定 ☆</h4>
+            <table class="table table-striped table-bordered">
+              <thead>
+              <tr>
+                <th>分類</th>
+                <th>打順</th>
+                <th>守備</th>
+                <th>
+                  名前
+                  <button type="button" class="btn btn-primary ml-2" (click)="generatePlayerName()">
+                    ランダム
+                  </button>
+                </th>
+                <th>パワー</th>
+                <th>ミート</th>
+                <th>走　力</th>
+                <th>守備力</th>
+                <th>小計</th>
+              </tr>
+              </thead>
+              <tbody formArrayName="playerDataArray">
+              <tr *ngFor="let player of playerDataArray.controls; index as i" [formGroupName]="i">
+                <td *ngIf="i == 0" rowspan="8">野手</td>
+                <td>{{i + 1}}</td>
+                <td>
+                  <select name="position{{i + 1}}" formControlName="position" (blur)="setPlayerPosition(i)">
+                    <ng-container *ngFor="let position of ['捕', '一', '二', '三', '遊', '左', '中', '右']">
+                      <option value="{{position}}">{{position}}</option>
+                    </ng-container>
+                  </select>
+                </td>
+                <td>
+                  <input type="text" name="player_name{{i + 1}}" size="12"
+                         placeholder="全角5文字まで" formControlName="playerName" (blur)="setPlayerName('player', i)">
+                </td>
+                <td>
+                  <input type="text" name="power{{i + 1}}" size="2" formControlName="power" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="meet{{i + 1}}" size="2" formControlName="meet" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="run{{i + 1}}" size="2" formControlName="run" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="defense{{i + 1}}" size="2" formControlName="defense" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="sum{{i + 1}}" size="2" class="form-control-plaintext ro_param text-center" readonly
+                         formControlName="playerSum" (blur)="calcTeamParams()">
+                </td>
+              </tr>
+              </tbody>
+              <tbody formArrayName="farmPlayerDataArray">
+              <tr *ngFor="let player of farmPlayerDataArray.controls; index as j" [formGroupName]="j">
+                <td *ngIf="j == 0" rowspan="4">ベンチ</td>
+                <td>{{j + 9}}</td>
+                <td>控</td>
+                <td>
+                  <input type="text" name="player_name{{j + 9}}" size="12"
+                         placeholder="全角5文字まで" formControlName="playerName" (blur)="setPlayerName('farm', j)">
+                </td>
+                <td>
+                  <input type="text" name="power{{j + 9}}" size="2" formControlName="power" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="meet{{j + 9}}" size="2" formControlName="meet" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="run{{j + 9}}" size="2" formControlName="run" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="defense{{j + 9}}" size="2" formControlName="defense" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="sum{{j + 9}}" size="2" class="form-control-plaintext ro_param text-center" readonly
+                         formControlName="playerSum" (blur)="calcTeamParams()">
+                </td>
+              </tr>
+              </tbody>
+              <thead>
+              <tr>
+                <th>分類</th>
+                <th>打順</th>
+                <th>守備</th>
+                <th>名前</th>
+                <th>速　球</th>
+                <th>変化球</th>
+                <th>制球力</th>
+                <th>守備力</th>
+                <th>小計</th>
+              </tr>
+              </thead>
+              <tbody formArrayName="pitcherDataArray">
+              <tr *ngFor="let pitcher of pitcherDataArray.controls; index as k" [formGroupName]="k">
+                <td *ngIf="k == 0" rowspan="6">投手</td>
+                <td>{{k + 13}}</td>
+                <td>投</td>
+                <td>
+                  <input type="text" name="player_name{{k + 13}}" size="12"
+                         placeholder="全角5文字まで" formControlName="playerName" (blur)="setPlayerName('pitcher', k)">
+                </td>
+                <td>
+                  <input type="text" name="speed{{k + 13}}" size="2" formControlName="speed" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="change{{k + 13}}" size="2" formControlName="change" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="control{{k + 13}}" size="2" formControlName="control" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="defense{{k + 13}}" size="2" formControlName="defense" (blur)="calcPlayerSum()">
+                </td>
+                <td>
+                  <input type="text" name="sum{{k + 13}}" size="2" class="form-control-plaintext ro_param text-center" readonly
+                         formControlName="playerSum" (blur)="calcTeamParams()">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<app-icon-selector (icon)="onSelected($event)"></app-icon-selector>
