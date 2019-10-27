@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CurrentService } from '../current.service';
 
 @Component({
   selector: 'app-now-champion',
@@ -6,8 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./now-champion.component.css']
 })
 export class NowChampionComponent implements OnInit {
+  champion = this.currentService.getChampionInfo();
 
-  constructor() { }
+  constructor(private currentService: CurrentService) { }
 
   ngOnInit() {
   }

@@ -1,1 +1,43 @@
-<p>team-rank works!</p>
+<div id="league_rank">
+  <h3>順位表</h3>
+  <table class="table table-striped table-bordered">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col">順位</th>
+      <th scope="col">アイコン</th>
+      <th scope="col">チーム名</th>
+      <th scope="col">監督</th>
+      <th scope="col">試合</th>
+      <th scope="col">勝敗</th>
+      <th scope="col">貯金</th>
+      <th scope="col">勝率</th>
+      <th scope="col">HR</th>
+      <th scope="col">盗塁</th>
+      <th scope="col">打率</th>
+      <th scope="col">防御率</th>
+      <th scope="col">残試合</th>
+      <th scope="col">ゲーム差</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let team of teams; index as i">
+      <td class="align-middle">{{i + 1}}</td>
+      <td class="align-middle">
+        <img width="80" src="../assets/icons/{{team.icon}}" alt="icon">
+      </td>
+      <td class="align-middle">{{team.name}}</td>
+      <td class="align-middle">{{team.owner}}</td>
+      <td class="align-middle">{{team.game}}</td>
+      <td class="align-middle">{{team.win}}勝{{team.lose}}敗</td>
+      <td class="align-middle">{{team.save}}</td>
+      <td class="align-middle">{{team.winAve}}</td>
+      <td class="align-middle">{{team.hr}}</td>
+      <td class="align-middle">{{team.steal}}</td>
+      <td class="align-middle">{{team.batAve}}</td>
+      <td class="align-middle">{{team.defAve}}</td>
+      <td class="align-middle">{{team.restGame}}</td>
+      <td class="align-middle">{{team.gameDiff}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

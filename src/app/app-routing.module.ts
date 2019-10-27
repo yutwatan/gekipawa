@@ -8,6 +8,7 @@ import { RecordComponent } from './record/record.component';
 import { RankingComponent } from './ranking/ranking.component';
 import { HelpComponent } from './help/help.component';
 import { LinkComponent } from './link/link.component';
+import { AddTeamComponent } from './team/add-team/add-team.component';
 
 @NgModule({
   declarations: [],
@@ -16,12 +17,14 @@ import { LinkComponent } from './link/link.component';
     RouterModule.forRoot([
       {path: '', redirectTo: '/top', pathMatch: 'full'},
       {path: 'about', component: AboutComponent},
+      {path: 'add_team', component: AddTeamComponent},
       {path: 'help', component: HelpComponent},
       {path: 'link', component: LinkComponent},
       {path: 'news', component: NewsComponent},
       {path: 'ranking', component: RankingComponent},
       {path: 'record', component: RecordComponent},
       {path: 'top', component: TopComponent},
+      {path: '**', redirectTo: '/top'},
     ])
   ],
   exports: [

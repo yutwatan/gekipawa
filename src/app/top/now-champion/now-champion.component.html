@@ -1,1 +1,15 @@
-<p>now-champion works!</p>
+<div id="now_champion">
+  <div class="text-center border border-dark rounded py-4">
+    <h3>Now Champion! （現在 {{champion.continuousWin}} 連勝中！）</h3>
+    <img class="mx-3" width="80" src="../assets/icons/{{champion.icon}}">
+    <span>{{champion.team}}（{{champion.owner}}）</span>
+    <div class="py-4">
+      <p>【予告先発： {{champion.nextPitcher.name}}】</p>
+      <ul class="list-unstyled">
+        <li>{{champion.nextPitcher.win}}勝{{champion.nextPitcher.lose}}敗</li>
+        <li>防御率 {{champion.nextPitcher.defAve}}</li>
+        <li>状態 {{champion.nextPitcher.condition}}</li>
+      </ul>
+    </div>
+  </div>
+</div>

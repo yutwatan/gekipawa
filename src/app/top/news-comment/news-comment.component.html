@@ -1,1 +1,15 @@
-<p>news-comment works!</p>
+<div id="geki_news">
+  <div class="border border-dark rounded py-4">
+    <h3 class="px-3">試合後の監督コメント</h3>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item" *ngFor="let item of newsComments">
+            <span *ngIf="item.type == 1">
+            ■ 劇パワニュース：『{{item.message}}』【{{item.topTeam}} {{item.topScore}} - {{item.bottomScore}} {{item.bottomTeam}}】({{item.time}})
+            </span>
+        <span *ngIf="item.type == 2">
+            □ {{item.owner}}：『{{item.message}}』【{{item.topTeam}} {{item.topScore}} - {{item.bottomScore}} {{item.bottomTeam}}】({{item.time}})
+            </span>
+      </li>
+    </ul>
+  </div>
+</div>
