@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TeamService } from '../team.service';
 
 @Component({
   selector: 'app-team-rank',
@@ -6,8 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./team-rank.component.css']
 })
 export class TeamRankComponent implements OnInit {
+  teams = this.teamService.getRanking(5);
 
-  constructor() { }
+  constructor(private teamService: TeamService) { }
 
   ngOnInit() {
   }

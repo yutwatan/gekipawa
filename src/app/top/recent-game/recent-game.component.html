@@ -1,1 +1,17 @@
-<p>recent-game works!</p>
+<div id="game_history">
+  <h3>最近5試合の結果</h3>
+  <table class="table table-striped">
+    <thead class="thead-light">
+    <tr>
+      <th>結果</th>
+      <th>日時</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let result of recentlyGames">
+      <td>{{result.topTeam}} {{result.topScore}} - {{result.bottomScore}} {{result.bottomTeam}}</td>
+      <td>({{result.time}})</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

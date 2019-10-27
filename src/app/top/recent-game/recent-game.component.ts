@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HistoryService } from '../history.service';
 
 @Component({
   selector: 'app-recent-game',
@@ -6,8 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./recent-game.component.css']
 })
 export class RecentGameComponent implements OnInit {
+  recentlyGames = this.historyService.getRecentlyGames(5);
 
-  constructor() { }
+  constructor(private historyService: HistoryService) { }
 
   ngOnInit() {
   }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CurrentService } from '../current.service';
 
 @Component({
   selector: 'app-gekipawa-info',
@@ -6,8 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./gekipawa-info.component.css']
 })
 export class GekipawaInfoComponent implements OnInit {
+  times = this.currentService.getTimes();
+  termDay = this.currentService.getTermDay();
 
-  constructor() { }
+  constructor(private currentService: CurrentService) { }
 
   ngOnInit() {
   }
