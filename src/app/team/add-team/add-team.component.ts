@@ -94,6 +94,10 @@ export class AddTeamComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.setPlayerFormArray(this.playerDataArray, 8);
+    this.setPlayerFormArray(this.farmPlayerDataArray, 4);
+    this.setPitcherFormArray(this.pitcherDataArray, 6);
+    this.calcTeamParams();
   }
 
   onSelected(icon) {
@@ -254,10 +258,13 @@ export class AddTeamComponent implements OnInit {
 
   generatePlayerName() {
     this.teamService.clearPlayerNames();
+    const position = ['捕', '一', '二', '三', '遊', '左', '中', '右'];
 
     for (const [i, playerData] of this.playerDataArray.controls.entries()) {
       playerData.get('playerName').setValue(this.teamService.generatePlayerName('player'));
       this.setPlayerName('player', i);
+
+      playerData.get('position').setValue(position[i]);
     }
 
     for (const [j, playerData] of this.farmPlayerDataArray.controls.entries()) {
