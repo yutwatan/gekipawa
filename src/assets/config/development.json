@@ -1,4 +1,8 @@
 {
+  "global": {
+    "site_title": "劇空間へっぽこリーグ！",
+    "base_hour": 3
+  },
   "team_param": {
     "sum": 360,
     "limit10": 2,

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfigService } from 'ngx-envconfig';
 
 @Component({
   selector: 'app-top',
@@ -6,8 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./top.component.css']
 })
 export class TopComponent implements OnInit {
+  globalConfig = this.configService.get('global');
 
-  constructor() { }
+  constructor(private configService: ConfigService) { }
 
   ngOnInit() {
   }

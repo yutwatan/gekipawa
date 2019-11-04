@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConfigService } from 'ngx-envconfig';
 import { CurrentService } from '../current.service';
 
 @Component({
@@ -7,10 +8,14 @@ import { CurrentService } from '../current.service';
   styleUrls: ['./gekipawa-info.component.css']
 })
 export class GekipawaInfoComponent implements OnInit {
+  globalConfig = this.configService.get('global');
   times = this.currentService.getTimes();
   termDay = this.currentService.getTermDay();
 
-  constructor(private currentService: CurrentService) { }
+  constructor(
+    private configService: ConfigService,
+    private currentService: CurrentService
+  ) { }
 
   ngOnInit() {
   }

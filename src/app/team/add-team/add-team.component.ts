@@ -12,6 +12,7 @@ import { UserService } from '../user.service';
 export class AddTeamComponent implements OnInit {
   addTeamForm: FormGroup;
 
+  globalConfig = this.configService.get('global');
   playerParam = this.configService.get('player_param');
   teamParam = this.configService.get('team_param');
 
