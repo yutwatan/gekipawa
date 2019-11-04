@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ConfigModule } from 'ngx-envconfig';
+import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { TopModule } from './top/top.module';
@@ -18,6 +20,7 @@ import { AppComponent } from './app.component';
     AppComponent,
   ],
   imports: [
+    ConfigModule.forRoot(environment),
     BrowserModule,
     AppRoutingModule,
     TopModule,

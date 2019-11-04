@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  state: 'production',
+  fallbackDev: true
 };

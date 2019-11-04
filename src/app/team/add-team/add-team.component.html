@@ -20,7 +20,7 @@
                 <label for="team_name">チームの名前</label>
               </dt>
               <dd class="col-md-9">
-                <input type="text" name="team_name" id="team_name" placeholder="全角6文字まで"
+                <input type="text" name="team_name" id="team_name" placeholder="全角{{teamParam.team_name_length.max}}文字まで"
                        formControlName="teamName" required minlength maxlength>
               </dd>
               <dt class="col-md-3 text-md-right">
@@ -41,7 +41,7 @@
                 <label for="owner_name">監督名</label>
               </dt>
               <dd class="col-md-9">
-                <input type="text" name="owner_name" id="owner_name" placeholder="全角5文字まで"
+                <input type="text" name="owner_name" id="owner_name" placeholder="全角{{teamParam.owner_name_length.max}}文字まで"
                        formControlName="owner" required minlength maxlength>
               </dd>
               <dt class="col-md-3 text-md-right">
@@ -106,19 +106,19 @@
             <ul class="row">
               <li class="col-sm-12">
                 <dl class="row mb-2">
-                  <dt class="col-sm-12">各選手の各パラメータは 1 〜 10</dt>
+                  <dt class="col-sm-12">各選手の各パラメータは {{playerParam.min}} 〜 {{playerParam.max}}</dt>
                   <dd class="mb-0"></dd>
                 </dl>
               </li>
               <li class="col-sm-12">
                 <dl class="row mb-2">
-                  <dt class="col-sm-12">各選手能力値の小計は 10 〜 28</dt>
+                  <dt class="col-sm-12">各選手能力値の小計は {{playerParam.sum_min}} 〜 {{playerParam.sum_max}}</dt>
                   <dd class="mb-0"></dd>
                 </dl>
               </li>
               <li class="col-sm-12">
                 <dl class="row mb-2">
-                  <dt class="col-sm-8">チーム全体の合計は 360</dt>
+                  <dt class="col-sm-8">チーム全体の合計は {{teamParam.sum}}</dt>
                   <dd class="col-sm-4 mb-0 form-inline">
                     現在：
                     <input type="text" name="team_total" size="4"
@@ -129,7 +129,7 @@
               </li>
               <li class="col-sm-12">
                 <dl class="row mb-2">
-                  <dt class="col-sm-8">パラメータ 10 の数は 2 つまで</dt>
+                  <dt class="col-sm-8">パラメータ 10 の数は {{teamParam.limit10}} つまで</dt>
                   <dd class="col-sm-4 mb-0 form-inline">
                     現在：
                     <input type="text" name="param_10" size="2"
@@ -140,7 +140,7 @@
               </li>
               <li class="col-sm-12">
                 <dl class="row mb-0">
-                  <dt class="col-sm-8">パラメータ 8 〜 9 の数は 6 つまで</dt>
+                  <dt class="col-sm-8">パラメータ 8 〜 9 の数は {{teamParam.limit8and9}} つまで</dt>
                   <dd class="col-sm-4 mb-0 form-inline">
                     現在：
                     <input type="text" name="param_8_9" size="2"
