@@ -328,7 +328,6 @@ export class AddTeamComponent implements OnInit {
     }
 
     console.log('start add process');
-    const user = await this.userService.addUser(this.addTeamForm);
-    await this.teamService.addTeam(user.id, this.addTeamForm);
+    await this.teamService.addTeam(this.addTeamForm);
   }
 }

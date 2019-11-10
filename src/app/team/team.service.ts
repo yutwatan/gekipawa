@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { TeamData } from './team-data';
 import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ConfigService } from 'ngx-envconfig';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,12 @@ export class TeamService {
   private positions = [];
   private regenerateTimes = 0;
 
-  constructor() { }
+  backendApiConfig = this.configService.get('backend_api');
+
+  constructor(
+    private configService: ConfigService,
+    private http: HttpClient
+  ) { }
 
   set playerName(playerObj: {index: number, playerName: string}) {
     this.playerNames[playerObj.index] = playerObj.playerName;
@@ -249,6 +256,32 @@ export class TeamService {
     ];
   }
 
-  async addTeam(userId: number, addTeamForm: FormGroup) {
+  async addTeam(addTeamForm: FormGroup) {
+    const teamInfo = {
+      teamName: addTeamForm.get('teamName').value,
+      icon: addTeamForm.get('icon').value,
+      typeAttach: addTeamForm.get('typeAttack').value,
+      typeBunt: addTeamForm.get('typeBunt').value,
+      typeSteal: addTeamForm.get('typeSteal').value,
+      typeMind: addTeamForm.get('typeMind').value,
+      ownerName: addTeamForm.get('owner').value,
+      password: addTeamForm.get('password').value,
+    };
+
+    const url = this.backendApiConfig.baseurl + '/team';
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+
+    try {
+      const response = await this.http.post(url, teamInfo, options).toPromise();
+      console.log(response);
+      // ToDo: 問題なく登録できたら、チーム画面に遷移させる
+    }
+    catch (e) {
+      console.log(e);
+    }
   }
 }
