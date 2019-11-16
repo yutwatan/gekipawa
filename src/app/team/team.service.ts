@@ -266,6 +266,9 @@ export class TeamService {
       typeMind: addTeamForm.get('typeMind').value,
       ownerName: addTeamForm.get('owner').value,
       password: addTeamForm.get('password').value,
+      players: addTeamForm.get('playerDataArray').value,
+      farmPlayers: addTeamForm.get('farmPlayerDataArray').value,
+      pitchers: addTeamForm.get('pitcherDataArray').value,
     };
 
     const url = this.backendApiConfig.baseurl + '/team';
