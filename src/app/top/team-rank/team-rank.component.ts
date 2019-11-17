@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TeamService } from '../team.service';
+import { TeamService } from '../../team/team.service';
 
 @Component({
   selector: 'app-team-rank',

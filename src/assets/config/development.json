@@ -1,0 +1,36 @@
+{
+  "global": {
+    "site_title": "劇空間へっぽこリーグ！",
+    "base_hour": 3
+  },
+  "backend_api": {
+    "baseurl": "http://localhost:3000"
+  },
+  "team_param": {
+    "sum": 360,
+    "limit10": 2,
+    "limit8and9": 6,
+    "team_name_length": {
+      "min": 1,
+      "max": 6
+    },
+    "owner_name_length": {
+      "min": 1,
+      "max": 5
+    },
+    "password_length": {
+      "min": 4,
+      "max": 8
+    }
+  },
+  "player_param": {
+    "min": 1,
+    "max": 10,
+    "sum_min": 10,
+    "sum_max": 28,
+    "player_name_length": {
+      "min": 2,
+      "max": 5
+    }
+  }
+}
