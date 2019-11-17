@@ -256,6 +256,10 @@ export class TeamService {
     ];
   }
 
+  /**
+   * Add team data
+   * @param addTeamForm Form data
+   */
   async addTeam(addTeamForm: FormGroup) {
     const teamInfo = {
       teamName: addTeamForm.get('teamName').value,
@@ -279,9 +283,7 @@ export class TeamService {
     };
 
     try {
-      const response = await this.http.post(url, teamInfo, options).toPromise();
-      console.log(response);
-      // ToDo: 問題なく登録できたら、チーム画面に遷移させる
+      await this.http.post(url, teamInfo, options).toPromise();
     }
     catch (e) {
       console.log(e);
