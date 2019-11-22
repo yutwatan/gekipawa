@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfigService } from 'ngx-envconfig';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { TeamService } from './team.service';
 
 @Component({
   selector: 'app-team',
@@ -12,27 +13,27 @@ export class TeamComponent implements OnInit {
 
   globalConfig = this.configService.get('global');
 
-  teamData = this.getTeamData(1);
+  teamInfo: any;
 
-  typeAttack = new FormControl(this.teamData.typeAttack, [
+  typeAttack = new FormControl(5, [
     Validators.required,
     Validators.min(1),
     Validators.max(10),
     Validators.pattern(/\d{1,2}/)
   ]);
-  typeBunt = new FormControl(this.teamData.typeBunt, [
+  typeBunt = new FormControl(5, [
     Validators.required,
     Validators.min(1),
     Validators.max(10),
     Validators.pattern(/\d{1,2}/)
   ]);
-  typeSteal = new FormControl(this.teamData.typeSteal, [
+  typeSteal = new FormControl(5, [
     Validators.required,
     Validators.min(1),
     Validators.max(10),
     Validators.pattern(/\d{1,2}/)
   ]);
-  typeMind = new FormControl(this.teamData.typeMind, [
+  typeMind = new FormControl(5, [
     Validators.required,
     Validators.min(1),
     Validators.max(10),
@@ -42,6 +43,7 @@ export class TeamComponent implements OnInit {
   constructor(
     private configService: ConfigService,
     private builder: FormBuilder,
+    private teamService: TeamService,
   ) {
     this.startGameForm = this.builder.group({
       typeAttack: this.typeAttack,
@@ -51,47 +53,41 @@ export class TeamComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.teamInfo = await this.getTeamInfo(3);
   }
 
   confirmGame() {
     console.log('confirmGame() called!');
   }
 
-  getTeamData(teamId) {
+  /**
+   * Get Team data, then generate data for team page
+   * @param teamId Team ID
+   */
+  async getTeamInfo(teamId) {
+    const teamInfo: any = await this.teamService.getTeam(teamId);
+
+    this.typeAttack.setValue(teamInfo.typeAttack);
+    this.typeBunt.setValue(teamInfo.typeBunt);
+    this.typeSteal.setValue(teamInfo.typeSteal);
+    this.typeMind.setValue(teamInfo.typeMind);
+
     // TODO: DB から取得したデータを使う
-    return {
-      teamName: 'Test team',
-      owner: 'Onwer name',
-      icon: 'lions2.png',
-      typeAttack: 10,
-      typeBunt: 2,
-      typeSteal: 8,
-      typeMind: 8,
-      rank: 2,
-      campTimes: 4,
-      lastUpdated: '2019-11-16 22:54:53',
-      stats: {
-        win: 8,
-        lose: 2,
-        winAve: 8 * 1000 / 10,
-        winContinue: 5,
-        hitAve: '.287',
-        loseScoreAve: '2.43',
-        scoreAve: '5.21',
-        hr: 10,
-        steal: 7,
-        strikeOut: 77,
-        error: 2,
-      },
-      gameHistory: [
-        {
-          myScore: 5,
-          otherTeamName: 'Team B',
-          otherScore: 2,
-          timestamp: '2019-11-16 22:22:22'
-        }
-      ]
-    };
+    teamInfo.rank = 2;
+    teamInfo.teamData.winAve = teamInfo.teamData.win * 1000 / (teamInfo.teamData.win + teamInfo.teamData.lose) || '000';
+    teamInfo.teamData.hitAve = '287';
+    teamInfo.teamData.loseScoreAve = '2.43';
+    teamInfo.teamData.scoreAve = '5.21';
+    teamInfo.gameHistory = [
+      {
+        myScore: 5,
+        otherTeamName: 'Team B',
+        otherScore: 2,
+        timestamp: '2019-11-16 22:22:22'
+      }
+    ];
+
+    return teamInfo;
   }
 }

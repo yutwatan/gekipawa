@@ -11,6 +11,7 @@ export class TeamService {
   private playerNames = [];
   private positions = [];
   private regenerateTimes = 0;
+  private existTeams: any = [];
 
   backendApiConfig = this.configService.get('backend_api');
 
@@ -160,14 +161,40 @@ export class TeamService {
       }
 
       const duplicate = playerNames.includes(control.value);
-      return duplicate ? {duplicatePlayerName: control.value} : null;
+      return duplicate ? {message: control.value} : null;
     };
   }
 
   duplicatePlayerPositionValidator(): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
       const duplicate = this.positions.includes(control.value);
-      return duplicate ? {duplicatePosition: control.value} : null;
+      return duplicate ? {message: control.value} : null;
+    };
+  }
+
+  teamAlreadyExistValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      for (const teamInfo of this.existTeams) {
+        if (teamInfo.name === control.value) {
+          const errorMessage = 'チーム名「' + control.value +
+            '」は既に登録されています。他の名前に変更が必要です。';
+          return {message: errorMessage};
+        }
+      }
+      return null;
+    };
+  }
+
+  userAlreadyExistValidator(): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} | null => {
+      for (const teamInfo of this.existTeams) {
+        if (teamInfo.user.name === control.value) {
+          const errorMessage = '監督名「' + control.value +
+            '」は既に登録されています。他の名前に変更が必要です。';
+          return {message: errorMessage};
+        }
+      }
+      return null;
     };
   }
 
@@ -284,6 +311,35 @@ export class TeamService {
 
     try {
       await this.http.post(url, teamInfo, options).toPromise();
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * Get team data
+   * @param teamId Team ID
+   */
+  async getTeam(teamId: number) {
+    const url = this.backendApiConfig.baseurl + '/team/' + teamId;
+
+    try {
+      return await this.http.get(url).toPromise();
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * Get all team data with user data
+   */
+  async getAllTeams() {
+    const url = this.backendApiConfig.baseurl + '/teams';
+
+    try {
+      this.existTeams = await this.http.get(url).toPromise();
     }
     catch (e) {
       console.log(e);

@@ -11,9 +11,9 @@
   <div class="container-fluid py-4">
     <div class="row">
       <div class="col-12 text-center">
-        <h2>{{teamData.teamName}} &nbsp; {{teamData.rank}}位</h2>
+        <h2>{{teamInfo.name}} &nbsp; {{teamInfo.rank}}位</h2>
         <div id="last_game_date">
-          [ 最終更新日時 - {{teamData.lastUpdated}} ]
+          [ 最終更新日時 - {{teamInfo.teamData.updated}} ]
         </div>
         <div *ngIf="startGameForm.dirty && (startGameForm.invalid)">
           <div class="alert alert-danger" role="alert">
@@ -28,10 +28,10 @@
     <div class="row">
       <div class="col-md-4 text-center">
         <div id="team_icon">
-          <img src="/assets/icons/{{teamData.icon}}" width="80" alt="team_icon">
-          <span>監督： {{teamData.owner}}</span>
+          <img src="/assets/icons/{{teamInfo.icon}}" width="80" alt="team_icon">
+          <span>監督： {{teamInfo.user.name}}</span>
         </div>
-        <div id="team_params">
+        <div id="team_types">
           <div>チームの重視するタイプ（1〜10）</div>
           <table class="table table-bordered">
             <thead>
@@ -45,7 +45,7 @@
             <tbody>
             <tr>
               <td class="text-md-center">
-                <select name="team_type_attack" id="team_type" formControlName="typeAttack" required>
+                <select name="team_type_attack" formControlName="typeAttack" required>
                   <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
                           [value]="i" [selected]="i == typeAttack.value">{{i}}</option>
                 </select>
@@ -83,14 +83,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let hist of teamData.gameHistory">
+            <tr *ngFor="let hist of teamInfo.gameHistory">
               <td>{{hist.timestamp}}</td>
               <td *ngIf="hist.myScore > hist.otherScore">◯</td>
               <td *ngIf="hist.myScore < hist.otherScore">●</td>
               <td>{{hist.myScore}} - {{hist.otherScore}}</td>
               <td>{{hist.otherTeamName}}</td>
             </tr>
-            <tr *ngFor="let i of [2, 3, 4, 5]">
+            <tr *ngFor="let i of [].constructor(5 - teamInfo.gameHistory.length)">
               <td>-</td>
               <td>-</td>
               <td>-</td>
@@ -117,13 +117,13 @@
             </thead>
             <tbody>
             <tr>
-              <td>{{teamData.stats.win + teamData.stats.lose}}</td>
-              <td>.{{teamData.stats.winAve}}</td>
-              <td>{{teamData.stats.win}}</td>
-              <td>{{teamData.stats.lose}}</td>
-              <td>{{teamData.stats.win - teamData.stats.lose}}</td>
-              <td>{{teamData.stats.winContinue}}</td>
-              <td>{{globalConfig.max_game - teamData.stats.win - teamData.stats.lose}}</td>
+              <td>{{teamInfo.teamData.win + teamInfo.teamData.lose}}</td>
+              <td>.{{teamInfo.teamData.winAve}}</td>
+              <td>{{teamInfo.teamData.win}}</td>
+              <td>{{teamInfo.teamData.lose}}</td>
+              <td>{{teamInfo.teamData.win - teamInfo.teamData.lose}}</td>
+              <td>{{teamInfo.teamData.winContinue}}</td>
+              <td>{{globalConfig.max_game - teamInfo.teamData.win - teamInfo.teamData.lose}}</td>
             </tr>
             </tbody>
             <thead>
@@ -139,13 +139,13 @@
             </thead>
             <tbody>
             <tr>
-              <td>{{teamData.stats.hitAve}}</td>
-              <td>{{teamData.stats.loseScoreAve}}</td>
-              <td>{{teamData.stats.scoreAve}}</td>
-              <td>{{teamData.stats.hr}}</td>
-              <td>{{teamData.stats.steal}}</td>
-              <td>{{teamData.stats.strikeOut}}</td>
-              <td>{{teamData.stats.error}}</td>
+              <td>.{{teamInfo.teamData.hitAve}}</td>
+              <td>{{teamInfo.teamData.loseScoreAve}}</td>
+              <td>{{teamInfo.teamData.scoreAve}}</td>
+              <td>{{teamInfo.teamData.hr}}</td>
+              <td>{{teamInfo.teamData.steal}}</td>
+              <td>{{teamInfo.teamData.strikeOut}}</td>
+              <td>{{teamInfo.teamData.error}}</td>
             </tr>
             </tbody>
           </table>
@@ -180,24 +180,24 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+          <tr *ngFor="let player of teamInfo.players">
+            <td>{{player.order}}</td>
+            <td>{{player.position}}</td>
+            <td>{{player.name}}</td>
+            <td>{{player.condition}}</td>
+            <td>{{player.power}}</td>
+            <td>{{player.meet}}</td>
+            <td>{{player.run}}</td>
+            <td>{{player.defense}}</td>
+            <td>{{player.power + player.meet + player.run + player.defense}}</td>
+            <td>.{{player.ave}}</td>
+            <td>{{player.hr}}</td>
+            <td>{{player.bat_score}}</td>
+            <td>{{player.four_ball}}</td>
+            <td>{{player.strike_out}}</td>
+            <td>{{player.bunt}}</td>
+            <td>{{player.steal}}</td>
+            <td>{{player.error}}</td>
           </tr>
           </tbody>
         </table>
@@ -230,23 +230,23 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+          <tr *ngFor="let pitcher of teamInfo.pitchers">
+            <td>{{pitcher.order}}</td>
+            <td>投</td>
+            <td>{{pitcher.name}}</td>
+            <td>{{pitcher.condition}}</td>
+            <td>{{pitcher.speed}}</td>
+            <td>{{pitcher.change}}</td>
+            <td>{{pitcher.control}}</td>
+            <td>{{pitcher.defense}}</td>
+            <td>{{pitcher.speed + pitcher.change + pitcher.control + pitcher.defense}}</td>
+            <td>{{pitcher.loseScoreAve}}</td>
+            <td>{{pitcher.win}}</td>
+            <td>{{pitcher.lose}}</td>
+            <td>{{pitcher.strike_out}}</td>
+            <td>{{pitcher.four_ball}}</td>
+            <td>{{pitcher.hr}}</td>
+            <td>{{pitcher.error}}</td>
           </tr>
           </tbody>
         </table>
@@ -259,7 +259,7 @@
       <div class="col-md-12 text-center">
         <div class="form-group">
           <button type="submit" id="confirm_playball" class="btn btn-primary mr-2" [disabled]="startGameForm.invalid">試合開始</button>
-          <button type="button" id="camp_in" class="btn btn-info mr-2" [disabled]="teamData.campTimes >= 5">キャンプイン</button>
+          <button type="button" id="camp_in" class="btn btn-info mr-2" [disabled]="teamInfo.teamData.campTimes >= 5">キャンプイン</button>
           <button type="button" id="delete_team" class="btn btn-danger mr-2">チームの削除</button>
         </div>
       </div>
