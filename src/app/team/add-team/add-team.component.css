@@ -1,3 +1,12 @@
 input.ng-dirty.ng-invalid, input.ro_param.ng-invalid, select.ng-invalid {
   background-color: #ffaaaa;
 }
+
+input.ng-dirty.ng-valid, select.ng-dirty.ng-valid {
+  background-color: #f5ffc1;
+}
+
+.error-message {
+  font-size: smaller;
+  color: red;
+}

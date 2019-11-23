@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigService } from 'ngx-envconfig';
 import { TeamService } from '../team.service';
@@ -20,12 +21,14 @@ export class AddTeamComponent implements OnInit {
     Validators.required,
     Validators.minLength(this.teamParam.team_name_length.min),
     Validators.maxLength(this.teamParam.team_name_length.max),
+    this.teamService.teamAlreadyExistValidator(),
   ]);
   icon = new FormControl('', [ Validators.required ]);
   owner = new FormControl('', [
     Validators.required,
     Validators.minLength(this.teamParam.owner_name_length.min),
-    Validators.maxLength(this.teamParam.owner_name_length.max)
+    Validators.maxLength(this.teamParam.owner_name_length.max),
+    this.teamService.userAlreadyExistValidator(),
   ]);
   password = new FormControl('', [
     Validators.required,
@@ -77,6 +80,7 @@ export class AddTeamComponent implements OnInit {
 
   constructor(
     private configService: ConfigService,
+    private router: Router,
     private builder: FormBuilder,
     private userService: UserService,
     private teamService: TeamService,
@@ -99,11 +103,12 @@ export class AddTeamComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.setPlayerFormArray(this.playerDataArray, 8);
     this.setPlayerFormArray(this.farmPlayerDataArray, 4);
     this.setPitcherFormArray(this.pitcherDataArray, 6);
     this.calcTeamParams();
+    await this.teamService.getAllTeams();
   }
 
   /**
@@ -300,18 +305,22 @@ export class AddTeamComponent implements OnInit {
 
     for (const [i, playerData] of this.playerDataArray.controls.entries()) {
       playerData.get('playerName').setValue(this.teamService.generatePlayerName('player'));
+      playerData.get('playerName').markAsDirty();
       this.setPlayerName('player', i);
 
       playerData.get('position').setValue(position[i]);
+      playerData.get('position').markAsDirty();
     }
 
     for (const [j, playerData] of this.farmPlayerDataArray.controls.entries()) {
       playerData.get('playerName').setValue(this.teamService.generatePlayerName('player'));
+      playerData.get('playerName').markAsDirty();
       this.setPlayerName('farm', j);
     }
 
     for (const [k, playerData] of this.pitcherDataArray.controls.entries()) {
       playerData.get('playerName').setValue(this.teamService.generatePlayerName('pitcher'));
+      playerData.get('playerName').markAsDirty();
       this.setPlayerName('pitcher', k);
     }
 
@@ -327,7 +336,13 @@ export class AddTeamComponent implements OnInit {
       return;
     }
 
-    console.log('start add process');
-    await this.teamService.addTeam(this.addTeamForm);
+    try {
+      await this.teamService.addTeam(this.addTeamForm);
+
+      await this.router.navigate(['/team']);
+    }
+    catch (e) {
+      console.log(e);
+    }
   }
 }

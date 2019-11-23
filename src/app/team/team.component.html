@@ -1,1 +1,269 @@
-<p>team works!</p>
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12 text-center">
+      <h1 class="display-4">{{globalConfig.site_title}}</h1>
+    </div>
+  </div>
+</div>
+
+<form [formGroup]="startGameForm" (ngSubmit)="confirmGame()" novalidate>
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2>{{teamInfo.name}} &nbsp; {{teamInfo.rank}}位</h2>
+        <div id="last_game_date">
+          [ 最終更新日時 - {{teamInfo.teamData.updated}} ]
+        </div>
+        <div *ngIf="startGameForm.dirty && (startGameForm.invalid)">
+          <div class="alert alert-danger" role="alert">
+            Error: 不正なデータがあります{{startGameForm.errors}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid py-4" id="team_data">
+    <div class="row">
+      <div class="col-md-4 text-center">
+        <div id="team_icon">
+          <img src="/assets/icons/{{teamInfo.icon}}" width="80" alt="team_icon">
+          <span>監督： {{teamInfo.user.name}}</span>
+        </div>
+        <div id="team_types">
+          <div>チームの重視するタイプ（1〜10）</div>
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+              <th>守備 / 攻撃</th>
+              <th>バント</th>
+              <th>盗塁</th>
+              <th>直感 / 論理</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="text-md-center">
+                <select name="team_type_attack" formControlName="typeAttack" required>
+                  <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                          [value]="i" [selected]="i == typeAttack.value">{{i}}</option>
+                </select>
+              </td>
+              <td class="text-md-center">
+                <select name="team_type_bunt" formControlName="typeBunt" required>
+                  <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                          [value]="i" [selected]="i == typeBunt.value">{{i}}</option>
+                </select>
+              </td>
+              <td class="text-md-center">
+                <select name="team_type_steal" formControlName="typeSteal" required>
+                  <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                          [value]="i" [selected]="i == typeSteal.value">{{i}}</option>
+                </select>
+              </td>
+              <td class="text-md-center">
+                <select name="team_type_mind" formControlName="typeMind" required>
+                  <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                          [value]="i" [selected]="i == typeMind.value">{{i}}</option>
+                </select>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-4 text-center">
+        <div id="recently_game">
+          <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+              <th colspan="4">最近5試合の結果</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let hist of teamInfo.gameHistory">
+              <td>{{hist.timestamp}}</td>
+              <td *ngIf="hist.myScore > hist.otherScore">◯</td>
+              <td *ngIf="hist.myScore < hist.otherScore">●</td>
+              <td>{{hist.myScore}} - {{hist.otherScore}}</td>
+              <td>{{hist.otherTeamName}}</td>
+            </tr>
+            <tr *ngFor="let i of [].constructor(5 - teamInfo.gameHistory.length)">
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-md-4 text-center">
+        <div id="team_current_data">
+          <table class="table table-bordered">
+            <thead>
+            <tr>
+              <th>試合</th>
+              <th>勝率</th>
+              <th>勝ち</th>
+              <th>負け</th>
+              <th>貯金</th>
+              <th>連勝</th>
+              <th>残り試合</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>{{teamInfo.teamData.win + teamInfo.teamData.lose}}</td>
+              <td>.{{teamInfo.teamData.winAve}}</td>
+              <td>{{teamInfo.teamData.win}}</td>
+              <td>{{teamInfo.teamData.lose}}</td>
+              <td>{{teamInfo.teamData.win - teamInfo.teamData.lose}}</td>
+              <td>{{teamInfo.teamData.winContinue}}</td>
+              <td>{{globalConfig.max_game - teamInfo.teamData.win - teamInfo.teamData.lose}}</td>
+            </tr>
+            </tbody>
+            <thead>
+            <tr>
+              <th>打率</th>
+              <th>防御率</th>
+              <th>得点率</th>
+              <th>本塁打</th>
+              <th>盗塁</th>
+              <th>奪三振</th>
+              <th>失策</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>.{{teamInfo.teamData.hitAve}}</td>
+              <td>{{teamInfo.teamData.loseScoreAve}}</td>
+              <td>{{teamInfo.teamData.scoreAve}}</td>
+              <td>{{teamInfo.teamData.hr}}</td>
+              <td>{{teamInfo.teamData.steal}}</td>
+              <td>{{teamInfo.teamData.strikeOut}}</td>
+              <td>{{teamInfo.teamData.error}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid py-4" id="player_table">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <table class="table table-striped table-bordered">
+          <thead>
+          <tr>
+            <th>打順</th>
+            <th>守備</th>
+            <th>名前</th>
+            <th>調子</th>
+            <th>パワー</th>
+            <th>ミート</th>
+            <th>走力</th>
+            <th>守備</th>
+            <th>小計</th>
+            <th>打率</th>
+            <th>本塁</th>
+            <th>打点</th>
+            <th>四球</th>
+            <th>三振</th>
+            <th>犠打</th>
+            <th>盗塁</th>
+            <th>失策</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let player of teamInfo.players">
+            <td>{{player.order}}</td>
+            <td>{{player.position}}</td>
+            <td>{{player.name}}</td>
+            <td>{{player.condition}}</td>
+            <td>{{player.power}}</td>
+            <td>{{player.meet}}</td>
+            <td>{{player.run}}</td>
+            <td>{{player.defense}}</td>
+            <td>{{player.power + player.meet + player.run + player.defense}}</td>
+            <td>.{{player.ave}}</td>
+            <td>{{player.hr}}</td>
+            <td>{{player.bat_score}}</td>
+            <td>{{player.four_ball}}</td>
+            <td>{{player.strike_out}}</td>
+            <td>{{player.bunt}}</td>
+            <td>{{player.steal}}</td>
+            <td>{{player.error}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid py-4" id="pitcher_table">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <table class="table table-striped table-bordered">
+          <thead>
+          <tr>
+            <th>打順</th>
+            <th>守備</th>
+            <th>名前</th>
+            <th>調子</th>
+            <th>速球</th>
+            <th>変化</th>
+            <th>制球</th>
+            <th>守備</th>
+            <th>小計</th>
+            <th>防率</th>
+            <th>勝ち</th>
+            <th>負け</th>
+            <th>奪三</th>
+            <th>四球</th>
+            <th>被本</th>
+            <th>暴投</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let pitcher of teamInfo.pitchers">
+            <td>{{pitcher.order}}</td>
+            <td>投</td>
+            <td>{{pitcher.name}}</td>
+            <td>{{pitcher.condition}}</td>
+            <td>{{pitcher.speed}}</td>
+            <td>{{pitcher.change}}</td>
+            <td>{{pitcher.control}}</td>
+            <td>{{pitcher.defense}}</td>
+            <td>{{pitcher.speed + pitcher.change + pitcher.control + pitcher.defense}}</td>
+            <td>{{pitcher.loseScoreAve}}</td>
+            <td>{{pitcher.win}}</td>
+            <td>{{pitcher.lose}}</td>
+            <td>{{pitcher.strike_out}}</td>
+            <td>{{pitcher.four_ball}}</td>
+            <td>{{pitcher.hr}}</td>
+            <td>{{pitcher.error}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <div class="form-group">
+          <button type="submit" id="confirm_playball" class="btn btn-primary mr-2" [disabled]="startGameForm.invalid">試合開始</button>
+          <button type="button" id="camp_in" class="btn btn-info mr-2" [disabled]="teamInfo.teamData.campTimes >= 5">キャンプイン</button>
+          <button type="button" id="delete_team" class="btn btn-danger mr-2">チームの削除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>

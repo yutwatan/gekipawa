@@ -17,11 +17,14 @@
           <div class="form-group">
             <dl class="row mb-0">
               <dt class="col-md-3 text-md-right">
-                <label for="team_name">チームの名前</label>
+                <label for="team_name">チーム名</label>
               </dt>
               <dd class="col-md-9">
                 <input type="text" name="team_name" id="team_name" placeholder="全角{{teamParam.team_name_length.max}}文字まで"
                        formControlName="teamName" required minlength maxlength>
+                <span class="error-message" *ngIf="addTeamForm.get('teamName').getError('message')">
+                  {{addTeamForm.get('teamName').getError('message')}}
+                </span>
               </dd>
               <dt class="col-md-3 text-md-right">
                 <label for="icon">アイコン</label>
@@ -43,6 +46,9 @@
               <dd class="col-md-9">
                 <input type="text" name="owner_name" id="owner_name" placeholder="全角{{teamParam.owner_name_length.max}}文字まで"
                        formControlName="owner" required minlength maxlength>
+                <span class="error-message" *ngIf="addTeamForm.get('teamName').getError('message')">
+                  {{addTeamForm.get('owner').getError('message')}}
+                </span>
               </dd>
               <dt class="col-md-3 text-md-right">
                 <label for="password">パスワード</label>
@@ -67,7 +73,7 @@
                   <tbody>
                   <tr>
                     <td class="text-md-center">
-                      <select name="team_type_attack" id="team_type" formControlName="typeAttack" required>
+                      <select name="team_type_attack" formControlName="typeAttack" required>
                         <option *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
                                 [value]="i" [selected]="i == typeAttack.value">{{i}}</option>
                       </select>
@@ -155,13 +161,14 @@
         <div class="form-row">
           <div class="form-group">
             <button type="submit" id="sign_up" class="btn btn-info mr-2" [disabled]="addTeamForm.invalid">登録</button>
-            <a class="btn btn-success mr-2" routerLink="/" role="button">キャンセル</a>
+            <a class="btn btn-warning mr-2" routerLink="/" role="button">キャンセル</a>
           </div>
         </div>
         <div class="form-row">
           <div *ngIf="addTeamForm.dirty && (playerDataArray.invalid || farmPlayerDataArray.invalid || pitcherDataArray.invalid || addTeamForm.invalid)">
             <div class="alert alert-danger" role="alert">
-              Error: 不正なデータがあります{{addTeamForm.errors}}
+              Error: 不正なデータがあります
+              <div>{{addTeamForm.getError('message')}}</div>
             </div>
           </div>
         </div>
@@ -204,10 +211,16 @@
                       <option value="{{position}}">{{position}}</option>
                     </ng-container>
                   </select>
+                  <span class="error-message" *ngIf="addTeamForm.get('playerDataArray').controls[i].get('position').getError('message')">
+                    重複エラー
+                  </span>
                 </td>
                 <td>
-                  <input type="text" name="player_name{{i + 1}}" size="12"
+                  <input type="text" name="player_name{{i + 1}}" size="12" required minlength maxlength
                          placeholder="全角5文字まで" formControlName="playerName" (blur)="setPlayerName('player', i)">
+                  <span class="error-message" *ngIf="addTeamForm.get('playerDataArray').controls[i].get('playerName').getError('message')">
+                    重複エラー
+                  </span>
                 </td>
                 <td>
                   <input type="text" name="power{{i + 1}}" size="2" formControlName="power" (blur)="calcPlayerSum()">
