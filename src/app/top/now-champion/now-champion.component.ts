@@ -7,11 +7,12 @@ import { CurrentService } from '../current.service';
   styleUrls: ['./now-champion.component.css']
 })
 export class NowChampionComponent implements OnInit {
-  champion = this.currentService.getChampionInfo();
+  champion: any;
 
   constructor(private currentService: CurrentService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.champion = await this.currentService.getChampionInfo();
   }
 
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ConfigService } from 'ngx-envconfig';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { formatDate } from '@angular/common';
+import { sprintf } from 'sprintf-js';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ export class CurrentService {
   private times = 0;
   private backendApiConfig = this.configService.get('backend_api');
   private globalConfig = this.configService.get('global');
+  private playerCondition = ['最悪', '悪い', '普通', '良い', '絶好']
 
   constructor(
     private configService: ConfigService,
@@ -59,20 +61,57 @@ export class CurrentService {
     return 2;
   }
 
-  getChampionInfo() {
+  async getChampionInfo() {
+    const url = this.backendApiConfig.baseurl + '/current';
+    let current: any;
+
+    try {
+      const result: any = await this.http.get(url).toPromise();
+      current = result[0];
+    }
+    catch (e) {
+      console.log(e);
+    }
+
+    const pitcher = this.sortPitcher(current.team.pitchers, 'order', 'asc')[0];
+    const pitcherData = this.sortPitcher(pitcher.pitchingData, 'times', 'desc')[0];
+
     return {
-      team: 'Team AA',
-      owner: '渡邊監督',
-      icon: 'lions3.gif',
-      continuousWin: 7,
+      team: current.team.name,
+      owner: current.team.user.name,
+      icon: current.team.icon,
+      continuousWin: current.continueWin,
       nextPitcher: {
-        name: '増田達至',
-        win: 8,
-        lose: 2,
-        defAve: '3.12',
-        condition: 'Good'
+        name: pitcher.name,
+        win: pitcherData.win,
+        lose: pitcherData.lose,
+        defAve: this.calcDefenseAverage(pitcherData.lossScore, pitcherData.outCount),
+        condition: this.playerCondition[pitcher.condition - 1]
       }
     };
+  }
+
+  calcDefenseAverage(loseScore: number, outCount: number) {
+    if (loseScore === 0) {
+      return '0.00';
+    }
+    else {
+      return sprintf('%.2f', loseScore * 9 * 3 / outCount);
+    }
+  }
+
+  sortPitcher(pitchers: any, key: string, order: string) {
+    return pitchers.sort((a, b) => {
+      if (a[key] === b[key]) {
+        return 0;
+      }
+      if (order === 'asc') {
+        return a[key] > b[key] ? 1 : -1;
+      }
+      else {
+        return a[key] > b[key] ? -1 : 1;
+      }
+    });
   }
 
   _getStartDay() {
