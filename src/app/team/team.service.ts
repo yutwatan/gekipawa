@@ -291,7 +291,7 @@ export class TeamService {
     const teamInfo = {
       teamName: addTeamForm.get('teamName').value,
       icon: addTeamForm.get('icon').value,
-      typeAttach: addTeamForm.get('typeAttack').value,
+      typeAttack: addTeamForm.get('typeAttack').value,
       typeBunt: addTeamForm.get('typeBunt').value,
       typeSteal: addTeamForm.get('typeSteal').value,
       typeMind: addTeamForm.get('typeMind').value,

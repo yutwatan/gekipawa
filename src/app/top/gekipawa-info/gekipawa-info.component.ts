@@ -9,15 +9,16 @@ import { CurrentService } from '../current.service';
 })
 export class GekipawaInfoComponent implements OnInit {
   globalConfig = this.configService.get('global');
-  times = this.currentService.getTimes();
   termDay = this.currentService.getTermDay();
+  times: number;
 
   constructor(
     private configService: ConfigService,
     private currentService: CurrentService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.times = await this.currentService.getTimes();
   }
 
 }

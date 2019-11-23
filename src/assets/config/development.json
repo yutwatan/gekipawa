@@ -2,7 +2,8 @@
   "global": {
     "site_title": "劇空間へっぽこリーグ！",
     "base_hour": 3,
-    "max_game": 100
+    "max_game": 100,
+    "game_term": 10
   },
   "backend_api": {
     "baseurl": "http://localhost:3000"
