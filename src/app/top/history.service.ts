@@ -15,109 +15,35 @@ export class HistoryService {
     private http: HttpClient,
   ) { }
 
-  getNewsAndComments(num: number): News[] {
-    return [
-      {
-        type: 1,
-        message: '◯◯がノーヒットノーラン！',
-        owner: null,
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 2,
-        message: 'よっしゃ！',
-        owner: '原監督',
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 2,
-        message: 'よっしゃ！',
-        owner: '原監督',
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 2,
-        message: 'よっしゃ！',
-        owner: '原監督',
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 1,
-        message: '◯◯がノーヒットノーラン！',
-        owner: null,
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 1,
-        message: '◯◯がノーヒットノーラン！',
-        owner: null,
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 2,
-        message: 'よっしゃ！',
-        owner: '原監督',
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 2,
-        message: 'よっしゃ！',
-        owner: '原監督',
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 1,
-        message: '◯◯がノーヒットノーラン！',
-        owner: null,
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-      {
-        type: 1,
-        message: '◯◯がノーヒットノーラン！',
-        owner: null,
-        topTeam: 'TEAM KK',
-        topScore: 0,
-        bottomTeam: 'TEAM UU',
-        bottomScore: 4,
-        time: '2019-07-19 17:37:32'
-      },
-    ];
+  /**
+   * Get recently 10 comments or news
+   * @param num 10
+   */
+  async getNewsAndComments(num: number): Promise<News[]> {
+    const url = this.backendApiConfig.baseurl + '/commentNews?limit=' + num;
+    const newsAndComments = [];
+
+    try {
+      const commentNews: any = await this.http.get(url).toPromise();
+
+      for (const item of commentNews) {
+        newsAndComments.push({
+          type: item.kind,
+          message: item.comment,
+          owner: item.user === null ? null : item.user.name,
+          topTeam: item.gameLog.topTeam.name,
+          topScore: item.gameLog.topScore,
+          bottomTeam: item.gameLog.botTeam.name,
+          bottomScore: item.gameLog.botScore,
+          time: item.commentDate,
+        });
+      }
+    }
+    catch (e) {
+      console.log(e);
+    }
+
+    return newsAndComments;
   }
 
   /**

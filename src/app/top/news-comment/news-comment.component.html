@@ -3,11 +3,11 @@
     <h3 class="px-3">試合後の監督コメント</h3>
     <ul class="list-group list-group-flush">
       <li class="list-group-item" *ngFor="let item of newsComments">
-            <span *ngIf="item.type == 1">
-            ■ 劇パワニュース：『{{item.message}}』【{{item.topTeam}} {{item.topScore}} - {{item.bottomScore}} {{item.bottomTeam}}】({{item.time}})
+            <span *ngIf="item.type === 'news'">
+            ■ 劇パワニュース：『{{item.message}}』【{{item.topTeam}} {{item.topScore}} - {{item.bottomScore}} {{item.bottomTeam}}】({{item.time | date: 'y-MM-dd H:mm:ss'}})
             </span>
-        <span *ngIf="item.type == 2">
-            □ {{item.owner}}：『{{item.message}}』【{{item.topTeam}} {{item.topScore}} - {{item.bottomScore}} {{item.bottomTeam}}】({{item.time}})
+        <span *ngIf="item.type === 'comment'">
+            □ {{item.owner}}：『{{item.message}}』【{{item.topTeam}} {{item.topScore}} - {{item.bottomScore}} {{item.bottomTeam}}】({{item.time | date: 'y-MM-dd H:mm:ss'}})
             </span>
       </li>
     </ul>
