@@ -4,6 +4,7 @@ import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from 'ngx-envconfig';
 import { sprintf } from 'sprintf-js';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class TeamService {
   private positions = [];
   private regenerateTimes = 0;
   private existTeams: any = [];
+  private teamId = 0;
 
   backendApiConfig = this.configService.get('backend_api');
   globalConfig = this.configService.get('global');
@@ -22,12 +24,20 @@ export class TeamService {
     private http: HttpClient
   ) { }
 
+  set loginTeamId(teamId: number) {
+    this.teamId = teamId;
+  }
+
   set playerName(playerObj: {index: number, playerName: string}) {
     this.playerNames[playerObj.index] = playerObj.playerName;
   }
 
   set position(playerObj: {index: number, playerPosition: string}) {
     this.positions[playerObj.index] = playerObj.playerPosition;
+  }
+
+  get loginTeamIdValue(): number {
+    return this.teamId;
   }
 
   get playerNamesData(): string[] {
@@ -309,7 +319,7 @@ export class TeamService {
       typeSteal: addTeamForm.get('typeSteal').value,
       typeMind: addTeamForm.get('typeMind').value,
       ownerName: addTeamForm.get('owner').value,
-      password: addTeamForm.get('password').value,
+      password: CryptoJS.SHA256(addTeamForm.get('password').value).toString(),
       players: addTeamForm.get('playerDataArray').value,
       farmPlayers: addTeamForm.get('farmPlayerDataArray').value,
       pitchers: addTeamForm.get('pitcherDataArray').value,
@@ -323,7 +333,7 @@ export class TeamService {
     };
 
     try {
-      await this.http.post(url, teamInfo, options).toPromise();
+      return await this.http.post(url, teamInfo, options).toPromise();
     }
     catch (e) {
       console.log(e);

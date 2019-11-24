@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigService } from 'ngx-envconfig';
@@ -84,6 +85,7 @@ export class AddTeamComponent implements OnInit {
     private builder: FormBuilder,
     private userService: UserService,
     private teamService: TeamService,
+    private title: Title,
   ) {
     this.addTeamForm = this.builder.group({
       teamName: this.teamName,
@@ -104,6 +106,7 @@ export class AddTeamComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.title.setTitle('新規登録 - ' + this.globalConfig.site_title);
     this.setPlayerFormArray(this.playerDataArray, 8);
     this.setPlayerFormArray(this.farmPlayerDataArray, 4);
     this.setPitcherFormArray(this.pitcherDataArray, 6);
@@ -337,8 +340,9 @@ export class AddTeamComponent implements OnInit {
     }
 
     try {
-      await this.teamService.addTeam(this.addTeamForm);
+      const teamInfo: any = await this.teamService.addTeam(this.addTeamForm);
 
+      this.teamService.loginTeamId = teamInfo.id;
       await this.router.navigate(['/team']);
     }
     catch (e) {
