@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import * as CryptoJS from 'crypto-js';
-import { UserService } from '../../team/user.service';
+import { UserService } from './user.service';
 import { TeamService } from '../../team/team.service';
 
 @Component({

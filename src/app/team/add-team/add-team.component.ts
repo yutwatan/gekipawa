@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigService } from 'ngx-envconfig';
 import { TeamService } from '../team.service';
-import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-add-team',
@@ -83,7 +82,6 @@ export class AddTeamComponent implements OnInit {
     private configService: ConfigService,
     private router: Router,
     private builder: FormBuilder,
-    private userService: UserService,
     private teamService: TeamService,
     private title: Title,
   ) {
