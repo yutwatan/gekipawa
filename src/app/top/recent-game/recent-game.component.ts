@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CurrentService } from '../current.service';
 import { HistoryService } from '../history.service';
+import { History } from '../history';
 
 @Component({
   selector: 'app-recent-game',
@@ -7,11 +9,17 @@ import { HistoryService } from '../history.service';
   styleUrls: ['./recent-game.component.css']
 })
 export class RecentGameComponent implements OnInit {
-  recentlyGames = this.historyService.getRecentlyGames(5);
+  times: number;
+  recentlyGames: History[];
 
-  constructor(private historyService: HistoryService) { }
+  constructor(
+    private currentService: CurrentService,
+    private historyService: HistoryService
+  ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.times = await this.currentService.getTimes();
+    this.recentlyGames = await this.historyService.getRecentlyGames(5, this.times);
   }
 
 }

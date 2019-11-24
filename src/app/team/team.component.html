@@ -13,7 +13,7 @@
       <div class="col-12 text-center">
         <h2>{{teamInfo.name}} &nbsp; {{teamInfo.rank}}位</h2>
         <div id="last_game_date">
-          [ 最終更新日時 - {{teamInfo.teamData.updated}} ]
+          [ 最終更新日時 - {{teamInfo.teamData.updated | date: 'y-MM-dd H:mm:ss'}} ]
         </div>
         <div *ngIf="startGameForm.dirty && (startGameForm.invalid)">
           <div class="alert alert-danger" role="alert">
@@ -84,7 +84,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let hist of teamInfo.gameHistory">
-              <td>{{hist.timestamp}}</td>
+              <td>{{hist.timestamp | date: 'y-MM-dd H:mm:ss'}}</td>
               <td *ngIf="hist.myScore > hist.otherScore">◯</td>
               <td *ngIf="hist.myScore < hist.otherScore">●</td>
               <td>{{hist.myScore}} - {{hist.otherScore}}</td>
