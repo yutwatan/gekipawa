@@ -12,7 +12,7 @@
       <td>{{result.topTeam}} {{result.topScore}} - {{result.bottomScore}} {{result.bottomTeam}}</td>
       <td>{{result.time | date: 'y-MM-dd H:mm:ss'}}</td>
     </tr>
-    <tr *ngFor="let n of [].constructor(5 - recentlyGames.length)">
+    <tr *ngFor="let n of [].constructor(5 - recentlyGames?.length)">
       <td>-</td>
       <td>-</td>
     </tr>
