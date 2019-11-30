@@ -259,7 +259,7 @@ export class TeamService {
     await this.getAllTeams();
     const sortedTeams = this.sortTeam();
 
-    const teamRank = [];
+    const teamRank: TeamData[] = [];
     let prevSave = 0;
     let headSave = 0;
 

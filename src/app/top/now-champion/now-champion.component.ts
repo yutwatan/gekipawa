@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrentService } from '../current.service';
+import { Champion } from './champion';
 
 @Component({
   selector: 'app-now-champion',
@@ -7,7 +8,7 @@ import { CurrentService } from '../current.service';
   styleUrls: ['./now-champion.component.css']
 })
 export class NowChampionComponent implements OnInit {
-  champion: any;
+  champion: Champion;
 
   constructor(private currentService: CurrentService) { }
 
