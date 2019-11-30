@@ -1,6 +1,6 @@
 <div id="league_rank">
   <h3>順位表</h3>
-  <table class="table table-striped table-bordered">
+  <table class="table table-striped table-bordered text-center">
     <thead class="thead-light">
     <tr>
       <th scope="col">順位</th>
@@ -23,7 +23,7 @@
     <tr *ngFor="let team of teams; index as i">
       <td class="align-middle">{{i + 1}}</td>
       <td class="align-middle">
-        <img width="80" src="../assets/icons/{{team.icon}}" alt="icon">
+        <img width="64" src="../assets/icons/{{team.icon}}" alt="icon">
       </td>
       <td class="align-middle">{{team.name}}</td>
       <td class="align-middle">{{team.owner}}</td>
@@ -36,7 +36,26 @@
       <td class="align-middle">{{team.batAve}}</td>
       <td class="align-middle">{{team.defAve}}</td>
       <td class="align-middle">{{team.restGame}}</td>
-      <td class="align-middle">{{team.gameDiff}}</td>
+      <td class="align-middle">
+        <div>{{team.gameDiff}}</div>
+        <div>({{team.gameDiffHead}})</div>
+      </td>
+    </tr>
+    <tr *ngFor="let n of [].constructor(5 - teams?.length); index as i">
+      <td class="align-middle">{{teams?.length + i + 1}}</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
+      <td class="align-middle">-</td>
     </tr>
     </tbody>
   </table>

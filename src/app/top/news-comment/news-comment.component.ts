@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HistoryService } from '../history.service';
+import { News } from '../news';
 
 @Component({
   selector: 'app-news-comment',
@@ -7,11 +8,12 @@ import { HistoryService } from '../history.service';
   styleUrls: ['./news-comment.component.css']
 })
 export class NewsCommentComponent implements OnInit {
-  newsComments = this.historyService.getNewsAndComments(10);
+  newsComments: News[];
 
   constructor(private historyService: HistoryService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.newsComments = await this.historyService.getNewsAndComments(10);
   }
 
 }

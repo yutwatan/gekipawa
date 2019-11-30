@@ -13,4 +13,5 @@ export class TeamData {
   defAve: string;
   restGame: number;
   gameDiff: string;
+  gameDiffHead: string;
 }

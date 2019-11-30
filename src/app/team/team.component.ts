@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ConfigService } from 'ngx-envconfig';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TeamService } from './team.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-team',
@@ -44,6 +45,7 @@ export class TeamComponent implements OnInit {
     private configService: ConfigService,
     private builder: FormBuilder,
     private teamService: TeamService,
+    private title: Title,
   ) {
     this.startGameForm = this.builder.group({
       typeAttack: this.typeAttack,
@@ -54,7 +56,8 @@ export class TeamComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.teamInfo = await this.getTeamInfo(3);
+    this.title.setTitle('チーム情報 - ' + this.globalConfig.site_title);
+    this.teamInfo = await this.getTeamInfo(this.teamService.loginTeamIdValue);
   }
 
   confirmGame() {

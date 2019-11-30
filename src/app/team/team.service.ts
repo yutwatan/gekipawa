@@ -3,6 +3,8 @@ import { TeamData } from './team-data';
 import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from 'ngx-envconfig';
+import { sprintf } from 'sprintf-js';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +14,19 @@ export class TeamService {
   private positions = [];
   private regenerateTimes = 0;
   private existTeams: any = [];
+  private teamId = 0;
 
   backendApiConfig = this.configService.get('backend_api');
+  globalConfig = this.configService.get('global');
 
   constructor(
     private configService: ConfigService,
     private http: HttpClient
   ) { }
+
+  set loginTeamId(teamId: number) {
+    this.teamId = teamId;
+  }
 
   set playerName(playerObj: {index: number, playerName: string}) {
     this.playerNames[playerObj.index] = playerObj.playerName;
@@ -26,6 +34,10 @@ export class TeamService {
 
   set position(playerObj: {index: number, playerPosition: string}) {
     this.positions[playerObj.index] = playerObj.playerPosition;
+  }
+
+  get loginTeamIdValue(): number {
+    return this.teamId;
   }
 
   get playerNamesData(): string[] {
@@ -198,89 +210,100 @@ export class TeamService {
     };
   }
 
-  getRanking(num: number): TeamData[] {
-    return [
-      {
-        icon: 'lions1.jpg',
-        name: 'Team A',
-        owner: '辻監督',
-        game: 8 + 2,
-        win: 8,
-        lose: 2,
-        save: 8 - 2,
-        winAve: '.800',
-        hr: 10,
-        steal: 8,
-        batAve: '.289',
-        defAve: '2.88',
-        restGame: 100 - (8 + 2),
-        gameDiff: '2.0'
-      },
-      {
-        icon: 'hawks3.jpg',
-        name: 'Team B',
-        owner: '辻監督',
-        game: 8 + 2,
-        win: 8,
-        lose: 2,
-        save: 8 - 2,
-        winAve: '.800',
-        hr: 10,
-        steal: 8,
-        batAve: '.289',
-        defAve: '2.88',
-        restGame: 100 - (8 + 2),
-        gameDiff: '2.0'
-      },
-      {
-        icon: 'marines1.jpg',
-        name: 'Team C',
-        owner: '辻監督',
-        game: 8 + 2,
-        win: 8,
-        lose: 2,
-        save: 8 - 2,
-        winAve: '.800',
-        hr: 10,
-        steal: 8,
-        batAve: '.289',
-        defAve: '2.88',
-        restGame: 100 - (8 + 2),
-        gameDiff: '2.0'
-      },
-      {
-        icon: 'buffaloes2.jpg',
-        name: 'Team D',
-        owner: '辻監督',
-        game: 8 + 2,
-        win: 8,
-        lose: 2,
-        save: 8 - 2,
-        winAve: '.800',
-        hr: 10,
-        steal: 8,
-        batAve: '.289',
-        defAve: '2.88',
-        restGame: 100 - (8 + 2),
-        gameDiff: '2.0'
-      },
-      {
-        icon: 'fighters1.jpg',
-        name: 'Team E',
-        owner: '辻監督',
-        game: 8 + 2,
-        win: 8,
-        lose: 2,
-        save: 8 - 2,
-        winAve: '.800',
-        hr: 10,
-        steal: 8,
-        batAve: '.289',
-        defAve: '2.88',
-        restGame: 100 - (8 + 2),
-        gameDiff: '2.0'
-      },
-    ];
+  /**
+   * Sort all teams for ranking
+   * order1: win(desc), order2: lose(asc)
+   */
+  sortTeam() {
+    return this.existTeams.sort((a, b) => {
+      const x = a.teamData.win;
+      const y = b.teamData.win;
+
+      // 勝が一緒なら負が少ないほうが上位
+      if (x === y) {
+        const s = a.teamData.lose;
+        const t = b.teamData.lose;
+
+        if (s === t) {
+          return 0;
+        }
+        return x > y ? 1 : -1;
+      }
+
+      return x > y ? -1 : 1;
+    });
+  }
+
+  calcAverage(a: number, b: number) {
+    if (a === 0) {
+      return '.000';
+    }
+
+    if (a / (a + b) === 1) {
+      return '1.000';
+    }
+
+    return sprintf('%.03f', a / (a + b)).slice(1);
+  }
+
+  calcDefenseAverage(loseScore: number, outCount: number) {
+    if (loseScore === 0) {
+      return '0.00';
+    }
+    else {
+      return sprintf('%.2f', loseScore * 9 * 3 / outCount);
+    }
+  }
+
+  async getRanking(num: number): Promise<TeamData[]> {
+    await this.getAllTeams();
+    const sortedTeams = this.sortTeam();
+
+    const teamRank: TeamData[] = [];
+    let prevSave = 0;
+    let headSave = 0;
+
+    for (const teamInfo of sortedTeams) {
+      const winNum = teamInfo.teamData.win;
+      const loseNum = teamInfo.teamData.lose;
+      let diffGame = '-';
+      let diffGameHead = '-';
+
+      // 首位と２位以降
+      if (teamRank.length === 0) {
+        headSave = winNum - loseNum;
+      }
+      else {
+        diffGame = sprintf('%.1f', (prevSave - (winNum - loseNum)) / 2);
+        diffGameHead = sprintf('%.1f', (headSave - (winNum - loseNum)) / 2);
+      }
+
+      teamRank.push({
+        icon: teamInfo.icon,
+        name: teamInfo.name,
+        owner: teamInfo.user.name,
+        game: winNum + loseNum,
+        win: winNum,
+        lose: loseNum,
+        save: winNum - loseNum,
+        winAve: this.calcAverage(winNum, loseNum),
+        hr: teamInfo.teamData.hr,
+        steal: teamInfo.teamData.steal,
+        batAve: this.calcAverage(teamInfo.teamData.hit, teamInfo.teamData.atBat),
+        defAve: this.calcDefenseAverage(teamInfo.teamData.lossScore, teamInfo.teamData.outCount),
+        restGame: this.globalConfig.max_game - (winNum + loseNum),
+        gameDiff: diffGame,
+        gameDiffHead: diffGameHead,
+      });
+
+      prevSave = winNum - loseNum;
+
+      if (teamRank.length === num) {
+        break;
+      }
+    }
+
+    return teamRank;
   }
 
   /**
@@ -296,7 +319,7 @@ export class TeamService {
       typeSteal: addTeamForm.get('typeSteal').value,
       typeMind: addTeamForm.get('typeMind').value,
       ownerName: addTeamForm.get('owner').value,
-      password: addTeamForm.get('password').value,
+      password: CryptoJS.SHA256(addTeamForm.get('password').value).toString(),
       players: addTeamForm.get('playerDataArray').value,
       farmPlayers: addTeamForm.get('farmPlayerDataArray').value,
       pitchers: addTeamForm.get('pitcherDataArray').value,
@@ -310,7 +333,7 @@ export class TeamService {
     };
 
     try {
-      await this.http.post(url, teamInfo, options).toPromise();
+      return await this.http.post(url, teamInfo, options).toPromise();
     }
     catch (e) {
       console.log(e);
