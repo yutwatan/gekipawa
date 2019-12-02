@@ -74,20 +74,25 @@ export class CurrentService {
       console.log(e);
     }
 
-    const pitcher = this.sortPitcher(current.team.pitchers, 'order', 'asc')[0];
-    const pitcherData = this.sortPitcher(pitcher.pitchingData, 'times', 'desc')[0];
+    let pitcher: any;
+    let pitcherData: any;
+
+    if (current.team) {
+      pitcher = this.sortPitcher(current.team.pitchers, 'order', 'asc')[0];
+      pitcherData = this.sortPitcher(pitcher.pitchingData, 'times', 'desc')[0];
+    }
 
     return {
-      team: current.team.name,
-      owner: current.team.user.name,
-      icon: current.team.icon,
-      continuousWin: current.continueWin,
+      team: current.team ? current.team.name : '該当なし',
+      owner: current.team ? current.team.user.name : '該当なし',
+      icon: current.team ? current.team.icon : 'brand_icon.png',
+      continuousWin: current.continueWin || 0,
       nextPitcher: {
-        name: pitcher.name,
-        win: pitcherData.win,
-        lose: pitcherData.lose,
-        defAve: this.calcDefenseAverage(pitcherData.lossScore, pitcherData.outCount),
-        condition: this.playerCondition[pitcher.condition - 1]
+        name: pitcher ? pitcher.name : '-',
+        win: pitcherData ? pitcherData.win : 0,
+        lose: pitcherData ? pitcherData.lose : 0,
+        defAve: pitcherData ? this.calcDefenseAverage(pitcherData.lossScore, pitcherData.outCount) : '-',
+        condition: pitcher ? this.playerCondition[pitcher.condition - 1] : '-'
       }
     };
   }

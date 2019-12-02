@@ -1,20 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfigService } from 'ngx-envconfig';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TeamService } from './team.service';
 import { Title } from '@angular/platform-browser';
+import { TeamInfo } from './team-info';
 
 @Component({
   selector: 'app-team',
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.css']
 })
-export class TeamComponent implements OnInit {
+export class TeamComponent implements OnInit, OnDestroy {
   startGameForm: FormGroup;
 
   globalConfig = this.configService.get('global');
+  teamConfig = this.configService.get('team_param');
 
-  teamInfo: any;
+  teamInfo: TeamInfo;
+  waitMinutes: number;
 
   typeAttack = new FormControl(5, [
     Validators.required,
@@ -58,38 +61,68 @@ export class TeamComponent implements OnInit {
   async ngOnInit() {
     this.title.setTitle('チーム情報 - ' + this.globalConfig.site_title);
     this.teamInfo = await this.getTeamInfo(this.teamService.loginTeamIdValue);
+    if (!this.teamService.loginTeamIdValue) {
+      console.log('セッション切れや〜');
+    }
+
+    this.waitMinutes = this.calcWaitMinutes();
   }
 
+  ngOnDestroy() {
+   console.log('destroy called');
+   this.teamService.loginTeamId = this.teamService.loginTeamIdValue;
+  }
+
+  /**
+   * Calculate the wait time to play next game
+   * TODO: 実装中
+   */
+  calcWaitMinutes(): number {
+    // const lastGame = this.teamInfo.lastGameDate;
+    const lastGame = '2019-12-02 23:24:41';
+    const lastTime = new Date(lastGame);
+    const nowTime  = new Date();
+    const elapsedMin = Math.floor((nowTime.getTime() - lastTime.getTime()) / 60000);
+    const waitMin = this.globalConfig.wait_minutes - elapsedMin;
+    return this.globalConfig.wait_minutes > elapsedMin ? waitMin : 0;
+  }
+
+  /**
+   * Confirm game
+   */
   confirmGame() {
     console.log('confirmGame() called!');
+  }
+
+  /**
+   * Open camp screen
+   */
+  goCamp() {
+    console.log('coCamp() called!');
+
+    // Check the camp times
+  }
+
+  /**
+   * Delete the team (also delete user, player, pitcher and those relation data)
+   */
+  deleteTeam() {
+    console.log('deleteTeam() called!');
   }
 
   /**
    * Get Team data, then generate data for team page
    * @param teamId Team ID
    */
-  async getTeamInfo(teamId) {
-    const teamInfo: any = await this.teamService.getTeam(teamId);
+  async getTeamInfo(teamId: number): Promise<TeamInfo> {
+    const teamInfo: TeamInfo = await this.teamService.getTeam(teamId);
 
-    this.typeAttack.setValue(teamInfo.typeAttack);
-    this.typeBunt.setValue(teamInfo.typeBunt);
-    this.typeSteal.setValue(teamInfo.typeSteal);
-    this.typeMind.setValue(teamInfo.typeMind);
-
-    // TODO: DB から取得したデータを使う
-    teamInfo.rank = 2;
-    teamInfo.teamData.winAve = teamInfo.teamData.win * 1000 / (teamInfo.teamData.win + teamInfo.teamData.lose) || '000';
-    teamInfo.teamData.hitAve = '287';
-    teamInfo.teamData.loseScoreAve = '2.43';
-    teamInfo.teamData.scoreAve = '5.21';
-    teamInfo.gameHistory = [
-      {
-        myScore: 5,
-        otherTeamName: 'Team B',
-        otherScore: 2,
-        timestamp: '2019-11-16 22:22:22'
-      }
-    ];
+    if (teamInfo) {
+      this.typeAttack.setValue(teamInfo.typeAttack);
+      this.typeBunt.setValue(teamInfo.typeBunt);
+      this.typeSteal.setValue(teamInfo.typeSteal);
+      this.typeMind.setValue(teamInfo.typeMind);
+    }
 
     return teamInfo;
   }
