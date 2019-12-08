@@ -5,6 +5,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from 'ngx-envconfig';
 import { sprintf } from 'sprintf-js';
 import * as CryptoJS from 'crypto-js';
+import { TeamRank } from '../top/team-rank/team-rank';
+import { TeamInfo } from './team-info';
+import { Player } from './player';
+import { Pitcher } from './pitcher';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +18,7 @@ export class TeamService {
   private positions = [];
   private regenerateTimes = 0;
   private existTeams: any = [];
-  private teamId = 0;
+  private teamId: number;
 
   backendApiConfig = this.configService.get('backend_api');
   globalConfig = this.configService.get('global');
@@ -216,13 +220,13 @@ export class TeamService {
    */
   sortTeam() {
     return this.existTeams.sort((a, b) => {
-      const x = a.teamData.win;
-      const y = b.teamData.win;
+      const x = a.teamData[0].win;
+      const y = b.teamData[0].win;
 
       // 勝が一緒なら負が少ないほうが上位
       if (x === y) {
-        const s = a.teamData.lose;
-        const t = b.teamData.lose;
+        const s = a.teamData[0].lose;
+        const t = b.teamData[0].lose;
 
         if (s === t) {
           return 0;
@@ -255,21 +259,21 @@ export class TeamService {
     }
   }
 
-  async getRanking(num: number): Promise<TeamData[]> {
+  async getRanking(num: number): Promise<TeamRank[]> {
     await this.getAllTeams();
     const sortedTeams = this.sortTeam();
 
-    const teamRank: TeamData[] = [];
+    const teamRank: TeamRank[] = [];
     let prevSave = 0;
     let headSave = 0;
 
     for (const teamInfo of sortedTeams) {
-      const winNum = teamInfo.teamData.win;
-      const loseNum = teamInfo.teamData.lose;
+      const winNum = teamInfo.teamData[0].win;
+      const loseNum = teamInfo.teamData[0].lose;
       let diffGame = '-';
       let diffGameHead = '-';
 
-      // 首位と２位以降
+      // true:首位, false:２位以降
       if (teamRank.length === 0) {
         headSave = winNum - loseNum;
       }
@@ -281,16 +285,19 @@ export class TeamService {
       teamRank.push({
         icon: teamInfo.icon,
         name: teamInfo.name,
-        owner: teamInfo.user.name,
+        owner: {
+          name: teamInfo.user.name,
+          password: teamInfo.user.password,
+        },
         game: winNum + loseNum,
         win: winNum,
         lose: loseNum,
         save: winNum - loseNum,
         winAve: this.calcAverage(winNum, loseNum),
-        hr: teamInfo.teamData.hr,
-        steal: teamInfo.teamData.steal,
-        batAve: this.calcAverage(teamInfo.teamData.hit, teamInfo.teamData.atBat),
-        defAve: this.calcDefenseAverage(teamInfo.teamData.lossScore, teamInfo.teamData.outCount),
+        hr: teamInfo.teamData[0].hr,
+        steal: teamInfo.teamData[0].steal,
+        batAve: this.calcAverage(teamInfo.teamData[0].hit, teamInfo.teamData[0].atBat),
+        defAve: this.calcDefenseAverage(teamInfo.teamData[0].lossScore, teamInfo.teamData[0].outCount),
         restGame: this.globalConfig.max_game - (winNum + loseNum),
         gameDiff: diffGame,
         gameDiffHead: diffGameHead,
@@ -304,6 +311,115 @@ export class TeamService {
     }
 
     return teamRank;
+  }
+
+  generateTeamData(teamInfo: any): TeamInfo {
+    const winNum = teamInfo.teamData[0].win;
+    const loseNum = teamInfo.teamData[0].lose;
+
+    return {
+      icon: teamInfo.icon,
+      name: teamInfo.name,
+      owner: {
+        name: teamInfo.user.name,
+        password: teamInfo.user.password,
+      },
+      game: winNum + loseNum,
+      win: winNum,
+      lose: loseNum,
+      save: winNum - loseNum,
+      winAve: this.calcAverage(winNum, loseNum),
+      hr: teamInfo.teamData[0].hr,
+      steal: teamInfo.teamData[0].steal,
+      strikeOut: teamInfo.teamData[0].strikeOut,
+      error: teamInfo.teamData[0].error,
+      batAve: this.calcAverage(teamInfo.teamData[0].hit, teamInfo.teamData[0].atBat),
+      defAve: this.calcDefenseAverage(teamInfo.teamData[0].lossScore, teamInfo.teamData[0].outCount),
+      scoreAve: '5.21', // TODO: 計算する
+      restGame: this.globalConfig.max_game - (winNum + loseNum),
+      typeAttack: teamInfo.typeAttack,
+      typeBunt: teamInfo.typeBunt,
+      typeSteal: teamInfo.typeSteal,
+      typeMind: teamInfo.typeMind,
+      winContinue: teamInfo.teamData[0].winContinue,
+      campTimes: teamInfo.campTimes,
+      rank: 2,  // TODO: 取得する
+      updated: teamInfo.updated,
+      players: this.generatePlayerData(teamInfo.players),
+      pitchers: this.generatePitcherData(teamInfo.pitchers),
+      gameHistory: [  // TODO: 取得する
+        {
+          topTeam: '-',
+          topScore: 5,
+          bottomTeam: 'Team B',
+          bottomScore: 2,
+          time: new Date(),
+        },
+      ]
+    };
+  }
+
+  generatePlayerData(playerInfos: any[]): Player[] {
+    const players: Player[] = [];
+
+    for (const playerInfo of playerInfos) {
+      players.push({
+        name: playerInfo.name,
+        order: playerInfo.order,
+        position: playerInfo.position,
+        condition: this.getConditionName(playerInfo.condition),
+        power: playerInfo.power,
+        meet: playerInfo.meet,
+        run: playerInfo.run,
+        defense: playerInfo.defense,
+        ave: '.332',  // TODO: 計算する
+        hr: playerInfo.battingData[0].hr,
+        batScore: playerInfo.battingData[0].batScore,
+        fourBall: playerInfo.battingData[0].fourBall,
+        strikeOut: playerInfo.battingData[0].strikeOut,
+        bunt: playerInfo.battingData[0].bunt,
+        steal: playerInfo.battingData[0].steal,
+        error: playerInfo.battingData[0].error,
+      });
+    }
+
+    return players;
+  }
+
+  generatePitcherData(pitcherInfos: any[]): Pitcher[] {
+    const pitchers: Pitcher[] = [];
+
+    for (const pitcherInfo of pitcherInfos) {
+      pitchers.push({
+        name: pitcherInfo.name,
+        order: pitcherInfo.order,
+        condition: this.getConditionName(pitcherInfo.condition),
+        speed: pitcherInfo.speed,
+        change: pitcherInfo.change,
+        control: pitcherInfo.control,
+        defense: pitcherInfo.defense,
+        loseScoreAve: '2.99', // TODO: 計算する
+        win: pitcherInfo.pitchingData[0].win,
+        lose: pitcherInfo.pitchingData[0].lose,
+        strikeOut: pitcherInfo.pitchingData[0].strikeOut,
+        fourBall: pitcherInfo.pitchingData[0].fourBall,
+        hr: pitcherInfo.pitchingData[0].hr,
+        error: pitcherInfo.pitchingData[0].error,
+      });
+    }
+
+    return pitchers;
+  }
+
+  getConditionName(condition: number): string {
+    const conditionName = {
+      1: '最悪',
+      2: '悪い',
+      3: '普通',
+      4: '良い',
+      5: '絶好',
+    };
+    return conditionName[condition];
   }
 
   /**
@@ -344,11 +460,12 @@ export class TeamService {
    * Get team data
    * @param teamId Team ID
    */
-  async getTeam(teamId: number) {
+  async getTeam(teamId: number): Promise<TeamInfo> {
     const url = this.backendApiConfig.baseurl + '/team/' + teamId;
 
     try {
-      return await this.http.get(url).toPromise();
+      const teamInfo = await this.http.get(url).toPromise();
+      return this.generateTeamData(teamInfo);
     }
     catch (e) {
       console.log(e);

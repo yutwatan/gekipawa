@@ -341,6 +341,7 @@ export class AddTeamComponent implements OnInit {
       const teamInfo: any = await this.teamService.addTeam(this.addTeamForm);
 
       this.teamService.loginTeamId = teamInfo.id;
+      localStorage.setItem('teamId', teamInfo.id);
       await this.router.navigate(['/team']);
     }
     catch (e) {

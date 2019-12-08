@@ -3,12 +3,14 @@
     "site_title": "劇空間へっぽこリーグ！",
     "base_hour": 3,
     "max_game": 100,
-    "game_term": 10
+    "game_term": 10,
+    "wait_minutes": 5
   },
   "backend_api": {
     "baseurl": "http://localhost:3000"
   },
   "team_param": {
+    "limit_camp": 5,
     "sum": 360,
     "limit10": 2,
     "limit8and9": 6,

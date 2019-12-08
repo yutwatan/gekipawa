@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TeamService } from '../../team/team.service';
-import { TeamData } from '../../team/team-data';
+import { TeamRank } from './team-rank';
 
 @Component({
   selector: 'app-team-rank',
@@ -8,7 +8,7 @@ import { TeamData } from '../../team/team-data';
   styleUrls: ['./team-rank.component.css']
 })
 export class TeamRankComponent implements OnInit {
-  teams: TeamData[];
+  teams: TeamRank[];
 
   constructor(private teamService: TeamService) { }
 
