@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { TeamData } from './team-data';
 import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from 'ngx-envconfig';

@@ -1,0 +1,293 @@
+<div class="text-success mb-5" id="result_message">
+  {{gameResult?.topTeam.score}} 対 {{gameResult?.bottomTeam.score}} で {{winTeam}} の勝利です！
+</div>
+
+<div class="my-3">
+  <table class="table table-sm table-bordered table-responsive-sm">
+    <thead class="thead-light">
+    <tr>
+      <th>チーム</th>
+      <th *ngFor="let inning of inningResults; index as i">{{i + 1}}</th>
+      <th>計</th>
+      <th>H</th>
+      <th>E</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{gameResult?.topTeam.team.name}}</td>
+      <td *ngFor="let inning of inningResults">{{inning.top.score}}</td>
+      <td>{{gameResult?.topTeam.score}}</td>
+      <td>{{gameResult?.topTeam.hit}}</td>
+      <td>{{gameResult?.topTeam.error}}</td>
+    </tr>
+    <tr>
+      <td>{{gameResult?.bottomTeam.team.name}}</td>
+      <td *ngFor="let inning of inningResults">{{inning.bottom.score}}</td>
+      <td>{{gameResult?.bottomTeam.score}}</td>
+      <td>{{gameResult?.bottomTeam.hit}}</td>
+      <td>{{gameResult?.bottomTeam.error}}</td>
+    </tr>
+    <tr>
+      <td rowspan="2" class="align-middle">安打</td>
+      <td *ngFor="let inning of inningResults">{{inning.top.hit}}</td>
+      <td>{{gameResult?.topTeam.hit}}</td>
+      <td colspan="2" rowspan="2"></td>
+    </tr>
+    <tr>
+      <td *ngFor="let inning of inningResults">{{inning.bottom.hit}}</td>
+      <td>{{gameResult?.bottomTeam.hit}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="my-3 w-50 mx-auto">
+  <table class="table table-sm table-borderless">
+    <tr>
+      <td class="text-right">[{{topResult}}]</td>
+      <td class="text-left">{{gameResult?.topTeam.pitcher.name}}</td>
+      <td class="text-left">{{gameResult?.topTeam.pitcher.win}}勝{{gameResult?.topTeam.pitcher.lose}}敗</td>
+    </tr>
+    <tr>
+      <td class="text-right">[{{bottomResult}}]</td>
+      <td class="text-left">{{gameResult?.bottomTeam.pitcher.name}}</td>
+      <td class="text-left">{{gameResult?.bottomTeam.pitcher.win}}勝{{gameResult?.bottomTeam.pitcher.lose}}敗</td>
+    </tr>
+    <tr>
+      <td class="text-right" rowspan="2">本塁打</td>
+      <td class="text-left" colspan="2">
+        <span *ngIf="gameResult?.topTeam.hr === 0">なし</span>
+        <span *ngIf="gameResult?.topTeam.hr !== 0">
+          <span *ngFor="let player of gameResult?.topTeam.players">
+            <span *ngIf="player.hr > 0">{{player.name}} {{player.totalHr}}号　</span>
+          </span>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td class="text-left" colspan="2">
+        <span *ngIf="gameResult?.bottomTeam.hr === 0">なし</span>
+        <span *ngIf="gameResult?.bottomTeam.hr !== 0">
+          <span *ngFor="let player of gameResult?.bottomTeam.players">
+            <span *ngIf="player.hr > 0">{{player.name}} {{player.totalHr}}号</span>
+          </span>
+        </span>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="my-3">
+  <div>
+    {{gameResult?.topTeam.team.name}} （{{gameResult?.topTeam.owner.name}}）
+    [ {{gameResult?.topTeam.games}}試合 {{gameResult?.topTeam.win}}勝{{gameResult?.topTeam.lose}}敗 ]
+  </div>
+  <table class="table table-sm table-responsive-sm table-bordered table-striped">
+    <thead class="thead-light">
+    <tr>
+      <th>順</th>
+      <th>守備</th>
+      <th>名前</th>
+      <th>打数</th>
+      <th>安打</th>
+      <th>HR</th>
+      <th>打点</th>
+      <th>三振</th>
+      <th>四死</th>
+      <th>犠打</th>
+      <th>盗塁</th>
+      <th>失策</th>
+      <th>打率</th>
+      <th>本</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let player of gameResult?.topTeam.players; index as i">
+      <td>{{i + 1}}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>投</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>計</td>
+      <td>-</td>
+      <td>-</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+  <table class="table table-sm table-responsive-sm table-bordered table-striped">
+    <thead class="thead-light">
+    <tr>
+      <th>守備</th>
+      <th>名前</th>
+      <th>打者</th>
+      <th>被安</th>
+      <th>被本</th>
+      <th>奪三</th>
+      <th>四球</th>
+      <th>失点</th>
+      <th>自責</th>
+      <th>防率</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>投</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="my-3">
+  <div>
+    {{gameResult?.bottomTeam.team.name}} （{{gameResult?.bottomTeam.owner.name}}）
+    [ {{gameResult?.bottomTeam.games}}試合 {{gameResult?.bottomTeam.win}}勝{{gameResult?.bottomTeam.lose}}敗 ]
+  </div>
+  <table class="table table-sm table-responsive-sm table-bordered table-striped">
+    <thead class="thead-light">
+    <tr>
+      <th>順</th>
+      <th>守備</th>
+      <th>名前</th>
+      <th>打数</th>
+      <th>安打</th>
+      <th>HR</th>
+      <th>打点</th>
+      <th>三振</th>
+      <th>四死</th>
+      <th>犠打</th>
+      <th>盗塁</th>
+      <th>失策</th>
+      <th>打率</th>
+      <th>本</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let player of gameResult?.bottomTeam.players; index as i">
+      <td>{{i + 1}}</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>投</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>計</td>
+      <td>-</td>
+      <td>-</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+  <table class="table table-sm table-responsive-sm table-bordered table-striped">
+    <thead class="thead-light">
+    <tr>
+      <th>守備</th>
+      <th>名前</th>
+      <th>打者</th>
+      <th>被安</th>
+      <th>被本</th>
+      <th>奪三</th>
+      <th>四球</th>
+      <th>失点</th>
+      <th>自責</th>
+      <th>防率</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>投</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,68 @@
+<div class="container-fluid py-4 px-md-5">
+  <div class="row">
+    <div class="col-12 text-center">
+      <h1 class="display-4">{{globalConfig.site_title}}</h1>
+      <h2>試合の経過</h2>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid py-4 px-md-5">
+  <div class="row">
+    <div class="col-sm-5 text-center">
+      <h3>【先攻】</h3>
+      <app-team-info [teamId]="playTeamId"></app-team-info>
+    </div>
+    <div class="col-sm-2 text-center my-5">
+      <span class="font-weight-bolder">VS</span>
+    </div>
+    <div class="col-sm-5 text-center">
+      <h3>【後攻】</h3>
+      <app-team-info [teamId]="championTeamId" [continueWin]="continueWin"></app-team-info>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid py-4 px-md-5">
+  <div class="row">
+    <div class="col-12 text-center mb-5">
+      <h3>― 試合開始 ―</h3>
+    </div>
+  </div>
+  <div class="row" *ngFor="let inning of inningResults; index as i">
+    <div class="col-sm-5 text-center">
+      <app-inning-result [topBottom]="'top'" [inningResult]="inning" [inning]="i + 1"></app-inning-result>
+    </div>
+    <div class="col-sm-2 text-center my-5">
+    </div>
+    <div class="col-sm-5 text-center">
+      <app-inning-result [topBottom]="'bottom'" [inningResult]="inning" [inning]="i + 1"></app-inning-result>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid py-4 px-md-5">
+  <div class="row">
+    <div class="col-12 text-center mb-5">
+      <h3>― 試合終了 ―</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <app-result></app-result>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid py-4 px-md-5">
+  <div class="row">
+    <div class="col-12 text-center mb-5">
+      <h3>試合後の監督コメント</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <app-comment></app-comment>
+    </div>
+  </div>
+</div>

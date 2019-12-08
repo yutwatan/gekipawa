@@ -13,6 +13,7 @@ import { RankingModule } from './ranking/ranking.module';
 import { RecordModule } from './record/record.module';
 import { TeamModule } from './team/team.module';
 import { LinkModule } from './link/link.module';
+import { GameModule } from './game/game.module';
 
 import { AppComponent } from './app.component';
 
@@ -33,6 +34,7 @@ import { AppComponent } from './app.component';
     RecordModule,
     TeamModule,
     LinkModule,
+    GameModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
