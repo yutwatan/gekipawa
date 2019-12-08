@@ -53,6 +53,7 @@ export class AuthComponent implements OnInit {
 
     if (teamId > 0) {
       this.teamService.loginTeamId = teamId;
+      localStorage.setItem('teamId', teamId);
       await this.router.navigate(['/team']);
     }
     else {

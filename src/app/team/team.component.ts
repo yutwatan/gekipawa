@@ -60,10 +60,12 @@ export class TeamComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.title.setTitle('チーム情報 - ' + this.globalConfig.site_title);
-    this.teamInfo = await this.getTeamInfo(this.teamService.loginTeamIdValue);
+
     if (!this.teamService.loginTeamIdValue) {
       console.log('セッション切れや〜');
+      this.teamService.loginTeamId = Number(localStorage.getItem('teamId'));
     }
+    this.teamInfo = await this.getTeamInfo(this.teamService.loginTeamIdValue);
 
     this.waitMinutes = this.calcWaitMinutes();
   }
