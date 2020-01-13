@@ -1,13 +1,46 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ConfigService } from 'ngx-envconfig';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
+  private backendApiConfig = this.configService.get('backend_api');
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private configService: ConfigService,
+    private http: HttpClient
+  ) { }
 
+  /**
+   * PlayBall, then save the game result data
+   * @param topTeamId Top team ID
+   * @param bottomTeamId Bottom team ID
+   */
+  async playBall(topTeamId: number, bottomTeamId: number): Promise<any> {
+    const url = this.backendApiConfig.baseurl + '/playBall';
+    const body = {    // NOTE: こんな書き方できるのね
+      topTeamId,
+      bottomTeamId,
+    };
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+
+    try {
+      return await this.http.post(url, body, options).toPromise();
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * これ後で消す
+   */
   async getGameResult(): Promise<any> {
     // TODO: Dummy
     return {
@@ -120,83 +153,5 @@ export class GameService {
         },
       }
     };
-  }
-
-  async getInningResults(): Promise<any[]> {
-    const inningResults = [];
-
-    // TODO: Dummy
-    for (let i = 0; i < 9; i++) {
-      inningResults.push({
-        top: {
-          score: 2,
-          hit: 3,
-          logData: [
-            {
-              order: 1,
-              player: {
-                name: 'aaa'
-              },
-              result: 'ゴロ',
-              outCount: 1,
-              runner: '000',
-            },
-            {
-              order: 2,
-              player: {
-                name: 'bbb'
-              },
-              result: 'ゴロ',
-              outCount: 2,
-              runner: '000',
-            },
-            {
-              order: 3,
-              player: {
-                name: 'ccc'
-              },
-              result: 'ゴロ',
-              outCount: 3,
-              runner: '000',
-            },
-          ]
-        },
-        bottom: {
-          score: 2,
-          hit: 3,
-          logData: [
-            {
-              order: 1,
-              player: {
-                name: 'aaa'
-              },
-              result: 'ゴロ',
-              outCount: 1,
-              runner: '000',
-            },
-            {
-              order: 1,
-              player: {
-                name: 'aaa'
-              },
-              result: 'ゴロ',
-              outCount: 2,
-              runner: '000',
-            },
-            {
-              order: 1,
-              player: {
-                name: 'aaa'
-              },
-              result: 'ゴロ',
-              outCount: 3,
-              runner: '000',
-            },
-          ]
-        },
-      });
-    }
-
-    return inningResults;
   }
 }

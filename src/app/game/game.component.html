@@ -49,7 +49,11 @@
   </div>
   <div class="row">
     <div class="col-12 text-center">
-      <app-result></app-result>
+      <app-result
+        [topTeamId]="playTeamId"
+        [botTeamId]="championTeamId"
+        [gameResults]="gameResults"
+      ></app-result>
     </div>
   </div>
 </div>
@@ -60,6 +64,7 @@
       <h3>試合後の監督コメント</h3>
     </div>
   </div>
+
   <div class="row">
     <div class="col-12 text-center">
       <app-comment></app-comment>
