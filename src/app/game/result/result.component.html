@@ -1,5 +1,5 @@
 <div class="text-success mb-5" id="result_message">
-  {{gameResult?.topTeam.score}} 対 {{gameResult?.bottomTeam.score}} で {{winTeam}} の勝利です！
+  {{gameRecord?.top.score}} 対 {{gameRecord?.bottom.score}} で {{winTeam}} の勝利です！
 </div>
 
 <div class="my-3">
@@ -7,7 +7,7 @@
     <thead class="thead-light">
     <tr>
       <th>チーム</th>
-      <th *ngFor="let inning of inningResults; index as i">{{i + 1}}</th>
+      <th *ngFor="let inning of scoreBoard?.top; index as i">{{i + 1}}</th>
       <th>計</th>
       <th>H</th>
       <th>E</th>
@@ -15,28 +15,30 @@
     </thead>
     <tbody>
     <tr>
-      <td>{{gameResult?.topTeam.team.name}}</td>
-      <td *ngFor="let inning of inningResults">{{inning.top.score}}</td>
-      <td>{{gameResult?.topTeam.score}}</td>
-      <td>{{gameResult?.topTeam.hit}}</td>
-      <td>{{gameResult?.topTeam.error}}</td>
+      <td>{{topTeamInfo?.name}}</td>
+      <td *ngFor="let inningScore of scoreBoard?.top">{{inningScore}}</td>
+      <td>{{gameRecord?.top.score}}</td>
+      <td>{{hitSum?.top}}</td>
+      <td>{{errorSum?.top}}</td>
     </tr>
     <tr>
-      <td>{{gameResult?.bottomTeam.team.name}}</td>
-      <td *ngFor="let inning of inningResults">{{inning.bottom.score}}</td>
-      <td>{{gameResult?.bottomTeam.score}}</td>
-      <td>{{gameResult?.bottomTeam.hit}}</td>
-      <td>{{gameResult?.bottomTeam.error}}</td>
+      <td>{{botTeamInfo?.name}}</td>
+      <td *ngFor="let inningScore of scoreBoard?.bottom">{{inningScore}}</td>
+      <td *ngIf="scoreBoard?.bottom.length < scoreBoard?.top.length">×</td>
+      <td>{{gameRecord?.bottom.score}}</td>
+      <td>{{hitSum?.bottom}}</td>
+      <td>{{errorSum?.bottom}}</td>
     </tr>
     <tr>
       <td rowspan="2" class="align-middle">安打</td>
-      <td *ngFor="let inning of inningResults">{{inning.top.hit}}</td>
-      <td>{{gameResult?.topTeam.hit}}</td>
+      <td *ngFor="let inningHit of hitBoard?.top">{{inningHit}}</td>
+      <td>{{hitSum?.top}}</td>
       <td colspan="2" rowspan="2"></td>
     </tr>
     <tr>
-      <td *ngFor="let inning of inningResults">{{inning.bottom.hit}}</td>
-      <td>{{gameResult?.bottomTeam.hit}}</td>
+      <td *ngFor="let inningHit of hitBoard?.bottom">{{inningHit}}</td>
+      <td *ngIf="scoreBoard?.bottom.length < scoreBoard?.top.length">×</td>
+      <td>{{hitSum?.bottom}}</td>
     </tr>
     </tbody>
   </table>
@@ -45,32 +47,32 @@
 <div class="my-3 w-50 mx-auto">
   <table class="table table-sm table-borderless">
     <tr>
-      <td class="text-right">[{{topResult}}]</td>
-      <td class="text-left">{{gameResult?.topTeam.pitcher.name}}</td>
-      <td class="text-left">{{gameResult?.topTeam.pitcher.win}}勝{{gameResult?.topTeam.pitcher.lose}}敗</td>
+      <td class="text-right">[{{winLose?.top}}]</td>
+      <td class="text-left">{{topTeamInfo?.pitchers[0].name}}</td>
+      <td class="text-left">{{topTeamInfo?.pitchers[0].win}}勝{{topTeamInfo?.pitchers[0].lose}}敗</td>
     </tr>
     <tr>
-      <td class="text-right">[{{bottomResult}}]</td>
-      <td class="text-left">{{gameResult?.bottomTeam.pitcher.name}}</td>
-      <td class="text-left">{{gameResult?.bottomTeam.pitcher.win}}勝{{gameResult?.bottomTeam.pitcher.lose}}敗</td>
+      <td class="text-right">[{{winLose?.bottom}}]</td>
+      <td class="text-left">{{botTeamInfo?.pitchers[0].name}}</td>
+      <td class="text-left">{{botTeamInfo?.pitchers[0].win}}勝{{botTeamInfo?.pitchers[0].lose}}敗</td>
     </tr>
     <tr>
       <td class="text-right" rowspan="2">本塁打</td>
       <td class="text-left" colspan="2">
-        <span *ngIf="gameResult?.topTeam.hr === 0">なし</span>
-        <span *ngIf="gameResult?.topTeam.hr !== 0">
-          <span *ngFor="let player of gameResult?.topTeam.players">
-            <span *ngIf="player.hr > 0">{{player.name}} {{player.totalHr}}号　</span>
+        <span *ngIf="gameRecord?.top.hr === 0">なし</span>
+        <span *ngIf="gameRecord?.top.hr !== 0">
+          <span *ngFor="let hr of hrData?.top" class="mr-3">
+            {{hr.playerName}} {{hr.hrCount}}号
           </span>
         </span>
       </td>
     </tr>
     <tr>
       <td class="text-left" colspan="2">
-        <span *ngIf="gameResult?.bottomTeam.hr === 0">なし</span>
-        <span *ngIf="gameResult?.bottomTeam.hr !== 0">
-          <span *ngFor="let player of gameResult?.bottomTeam.players">
-            <span *ngIf="player.hr > 0">{{player.name}} {{player.totalHr}}号</span>
+        <span *ngIf="gameRecord?.bottom.hr === 0">なし</span>
+        <span *ngIf="gameRecord?.bottom.hr !== 0">
+          <span *ngFor="let hr of hrData?.bottom" class="mr-3">
+            {{hr.playerName}} {{hr.hrCount}}号
           </span>
         </span>
       </td>
@@ -78,10 +80,10 @@
   </table>
 </div>
 
-<div class="my-3">
+<div class="my-5">
   <div>
-    {{gameResult?.topTeam.team.name}} （{{gameResult?.topTeam.owner.name}}）
-    [ {{gameResult?.topTeam.games}}試合 {{gameResult?.topTeam.win}}勝{{gameResult?.topTeam.lose}}敗 ]
+    {{topTeamInfo?.name}} （{{topTeamInfo?.owner.name}}）
+    [ {{topTeamInfo?.game + 1}}試合 {{topTeamInfo?.win}}勝{{topTeamInfo?.lose}}敗 ]
   </div>
   <table class="table table-sm table-responsive-sm table-bordered table-striped">
     <thead class="thead-light">
@@ -103,57 +105,59 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let player of gameResult?.topTeam.players; index as i">
-      <td>{{i + 1}}</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+    <tr *ngFor="let player of playerResult?.top; index as i">
+      <ng-container *ngIf="i < 8">
+        <td>{{i + 1}}</td>
+        <td>{{topTeamInfo?.players[i].position}}</td>
+        <td>{{topTeamInfo?.players[i].name}}</td>
+        <td>{{player.atBat}}</td>
+        <td>{{player.hit}}</td>
+        <td>{{player.hr}}</td>
+        <td>{{player.batScore}}</td>
+        <td>{{player.strikeOut}}</td>
+        <td>{{player.fourBall}}</td>
+        <td>{{player.bunt}}</td>
+        <td>{{player.steal}}</td>
+        <td>{{player.error}}</td>
+        <td>{{player.ave}}</td>
+        <td>{{player.hr}}</td>
+      </ng-container>
     </tr>
     <tr>
       <td>9</td>
       <td>投</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{{topTeamInfo?.pitchers[0].name}}</td>
+      <td>{{playerResult?.top[8].atBat}}</td>
+      <td>{{playerResult?.top[8].hit}}</td>
+      <td>{{playerResult?.top[8].hr}}</td>
+      <td>{{playerResult?.top[8].batScore}}</td>
+      <td>{{playerResult?.top[8].strikeOut}}</td>
+      <td>{{playerResult?.top[8].fourBall}}</td>
+      <td>{{playerResult?.top[8].bunt}}</td>
+      <td>{{playerResult?.top[8].steal}}</td>
+      <td>{{playerResult?.top[8].error}}</td>
+      <td>{{playerResult?.top[8].ave}}</td>
+      <td>{{playerResult?.top[8].hr}}</td>
     </tr>
     <tr>
       <td>計</td>
       <td>-</td>
       <td>-</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{{playerResultSum?.top.atBat}}</td>
+      <td>{{playerResultSum?.top.hit}}</td>
+      <td>{{playerResultSum?.top.hr}}</td>
+      <td>{{playerResultSum?.top.batScore}}</td>
+      <td>{{playerResultSum?.top.strikeOut}}</td>
+      <td>{{playerResultSum?.top.fourBall}}</td>
+      <td>{{playerResultSum?.top.bunt}}</td>
+      <td>{{playerResultSum?.top.steal}}</td>
+      <td>{{playerResultSum?.top.error}}</td>
+      <td>{{playerResultSum?.top.ave}}</td>
+      <td>{{playerResultSum?.top.totalHr}}</td>
     </tr>
     </tbody>
   </table>
-  <table class="table table-sm table-responsive-sm table-bordered table-striped">
+  <table class="table table-sm table-responsive-sm table-bordered">
     <thead class="thead-light">
     <tr>
       <th>守備</th>
@@ -171,15 +175,15 @@
     <tbody>
     <tr>
       <td>投</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{{topTeamInfo?.pitchers[0].name}}</td>
+      <td>{{pitcherResult?.top.atBat}}</td>
+      <td>{{pitcherResult?.top.hit}}</td>
+      <td>{{pitcherResult?.top.hr}}</td>
+      <td>{{pitcherResult?.top.strikeOut}}</td>
+      <td>{{pitcherResult?.top.fourBall}}</td>
+      <td>{{pitcherResult?.top.lossScore}}</td>
+      <td>{{pitcherResult?.top.selfLossScore}}</td>
+      <td>{{pitcherResult?.top.defAve}}</td>
     </tr>
     </tbody>
   </table>
@@ -187,8 +191,8 @@
 
 <div class="my-3">
   <div>
-    {{gameResult?.bottomTeam.team.name}} （{{gameResult?.bottomTeam.owner.name}}）
-    [ {{gameResult?.bottomTeam.games}}試合 {{gameResult?.bottomTeam.win}}勝{{gameResult?.bottomTeam.lose}}敗 ]
+    {{botTeamInfo?.name}} （{{botTeamInfo?.owner.name}}）
+    [ {{botTeamInfo?.game}}試合 {{botTeamInfo?.win}}勝{{botTeamInfo?.lose}}敗 ]
   </div>
   <table class="table table-sm table-responsive-sm table-bordered table-striped">
     <thead class="thead-light">
@@ -210,57 +214,59 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let player of gameResult?.bottomTeam.players; index as i">
-      <td>{{i + 1}}</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+    <tr *ngFor="let player of playerResult?.bottom; index as i">
+      <ng-container *ngIf="i < 8">
+        <td>{{i + 1}}</td>
+        <td>{{botTeamInfo?.players[i].position}}</td>
+        <td>{{botTeamInfo?.players[i].name}}</td>
+        <td>{{player.atBat}}</td>
+        <td>{{player.hit}}</td>
+        <td>{{player.hr}}</td>
+        <td>{{player.batScore}}</td>
+        <td>{{player.strikeOut}}</td>
+        <td>{{player.fourBall}}</td>
+        <td>{{player.bunt}}</td>
+        <td>{{player.steal}}</td>
+        <td>{{player.error}}</td>
+        <td>{{player.ave}}</td>
+        <td>{{player.hr}}</td>
+      </ng-container>
     </tr>
     <tr>
       <td>9</td>
       <td>投</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{{botTeamInfo?.pitchers[0].name}}</td>
+      <td>{{playerResult?.bottom[8].atBat}}</td>
+      <td>{{playerResult?.bottom[8].hit}}</td>
+      <td>{{playerResult?.bottom[8].hr}}</td>
+      <td>{{playerResult?.bottom[8].batScore}}</td>
+      <td>{{playerResult?.bottom[8].strikeOut}}</td>
+      <td>{{playerResult?.bottom[8].fourBall}}</td>
+      <td>{{playerResult?.bottom[8].bunt}}</td>
+      <td>{{playerResult?.bottom[8].steal}}</td>
+      <td>{{playerResult?.bottom[8].error}}</td>
+      <td>{{playerResult?.bottom[8].ave}}</td>
+      <td>{{playerResult?.bottom[8].hr}}</td>
     </tr>
     <tr>
       <td>計</td>
       <td>-</td>
       <td>-</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{{playerResultSum?.bottom.atBat}}</td>
+      <td>{{playerResultSum?.bottom.hit}}</td>
+      <td>{{playerResultSum?.bottom.hr}}</td>
+      <td>{{playerResultSum?.bottom.batScore}}</td>
+      <td>{{playerResultSum?.bottom.strikeOut}}</td>
+      <td>{{playerResultSum?.bottom.fourBall}}</td>
+      <td>{{playerResultSum?.bottom.bunt}}</td>
+      <td>{{playerResultSum?.bottom.steal}}</td>
+      <td>{{playerResultSum?.bottom.error}}</td>
+      <td>{{playerResultSum?.bottom.ave}}</td>
+      <td>{{playerResultSum?.bottom.totalHr}}</td>
     </tr>
     </tbody>
   </table>
-  <table class="table table-sm table-responsive-sm table-bordered table-striped">
+  <table class="table table-sm table-responsive-sm table-bordered">
     <thead class="thead-light">
     <tr>
       <th>守備</th>
@@ -278,15 +284,15 @@
     <tbody>
     <tr>
       <td>投</td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>{{botTeamInfo?.pitchers[0].name}}</td>
+      <td>{{pitcherResult?.bottom.atBat}}</td>
+      <td>{{pitcherResult?.bottom.hit}}</td>
+      <td>{{pitcherResult?.bottom.hr}}</td>
+      <td>{{pitcherResult?.bottom.strikeOut}}</td>
+      <td>{{pitcherResult?.bottom.fourBall}}</td>
+      <td>{{pitcherResult?.bottom.lossScore}}</td>
+      <td>{{pitcherResult?.bottom.selfLossScore}}</td>
+      <td>{{pitcherResult?.bottom.defAve}}</td>
     </tr>
     </tbody>
   </table>

@@ -30,6 +30,9 @@
     </div>
   </div>
   <div class="row" *ngFor="let inning of inningResults; index as i">
+    <div *ngIf="(i + 1) === 10" class="col-12 text-center mt-5">
+      <h3>― 延長戦 ―</h3>
+    </div>
     <div class="col-sm-5 text-center">
       <app-inning-result [topBottom]="'top'" [inningResult]="inning" [inning]="i + 1"></app-inning-result>
     </div>

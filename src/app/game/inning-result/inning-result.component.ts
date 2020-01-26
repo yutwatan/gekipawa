@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { InningData, InningResult } from '../game.component';
+import { InningData, TopBottomResult } from '../game.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
@@ -9,7 +9,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 })
 export class InningResultComponent implements OnInit, OnChanges {
   @Input() topBottom: string;
-  @Input() inningResult: InningResult;
+  @Input() inningResult: TopBottomResult<InningData>;
   @Input() inning: number;
 
   inningData: InningData;
@@ -22,8 +22,11 @@ export class InningResultComponent implements OnInit, OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.inningResult) {
       this.inningResult = changes.inningResult.currentValue;
-      this.inningData = this.inningResult[this.topBottom];
-      this.inningData.logData = this.getBattingResult(this.inningData.logData);
+
+      if (this.inningResult) {
+        this.inningData = this.inningResult[this.topBottom];
+        this.inningData.logData = this.getBattingResult(this.inningData.logData);
+      }
     }
   }
 
@@ -31,8 +34,8 @@ export class InningResultComponent implements OnInit, OnChanges {
    * 試合の経過用
    * @param battingRecords バッティング結果
    */
-  getBattingResult(battingRecords: any): PlayResult[] {
-    const gameResults: PlayResult[] = [];
+  getBattingResult(battingRecords: any): InningLogData[] {
+    const gameResults: InningLogData[] = [];
 
     for (const batting of battingRecords) {
       gameResults.push({
@@ -153,7 +156,7 @@ export class InningResultComponent implements OnInit, OnChanges {
   }
 }
 
-export interface PlayResult {
+export interface InningLogData {
   order: number;
   name: string;
   logText: string;

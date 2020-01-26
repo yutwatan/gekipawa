@@ -1,4 +1,35 @@
 <div class="text-center mt-md-5">
+  <div class="card">
+    <div class="card-header bg-light">
+      {{inning}} 回{{topBottom === 'top' ? '表' : '裏'}}
+    </div>
+    <div class="card-body">
+      <table class="table table-sm table-bordered">
+        <thead class="thead-light">
+        <tr class="table-active">
+          <th>順</th>
+          <th>名前</th>
+          <th>結果</th>
+          <th>ランナー</th>
+          <th>アウト</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let log of inningData.logData">
+          <td>{{log.order}}</td>
+          <td>{{log.name}}</td>
+          <td [innerHTML]="log.logText"></td>
+          <td id="runner_string" [innerHTML]="log.runner"></td>
+          <td>{{log.outCount}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer">
+      {{inningData.score}}
+    </div>
+  </div>
+  <!--
   <table class="table table-sm table-bordered">
     <thead class="thead-light">
     <tr>
@@ -25,4 +56,5 @@
     </tr>
     </tbody>
   </table>
+  -->
 </div>

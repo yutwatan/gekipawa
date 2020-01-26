@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ConfigService } from 'ngx-envconfig';
 import { CurrentService } from '../top/current.service';
 import { GameService } from './game.service';
-import { PlayResult } from './inning-result/inning-result.component';
+import { InningLogData } from './inning-result/inning-result.component';
+import { InningResult } from './result/result.component';
 
 @Component({
   selector: 'app-game',
@@ -15,7 +16,7 @@ export class GameComponent implements OnInit {
   championTeamId: number;
   continueWin: number;
   gameResults: GameResults;
-  inningResults: InningResult[];
+  inningResults: TopBottomResult<InningData>[];
 
   constructor(
     private configService: ConfigService,
@@ -24,7 +25,9 @@ export class GameComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    const current: any = await this.currentService.getCurrent();
+    this.inningResults = [];
+
+    const current = await this.currentService.getCurrent();
     this.championTeamId = current.team.id;
     this.continueWin = current.continueWin;
 
@@ -35,7 +38,12 @@ export class GameComponent implements OnInit {
    * 試合開始
    */
   async playBall() {
-    this.gameResults = await this.gameService.playBall(this.playTeamId, this.championTeamId);
+    try {
+      this.gameResults = await this.gameService.playBall(this.playTeamId, this.championTeamId);
+    }
+    catch (e) {
+      console.log(e);
+    }
 
     // TODO: for DEBUG
     console.log(this.gameResults);
@@ -71,23 +79,20 @@ export class GameComponent implements OnInit {
   }
 }
 
-export interface InningResult {
-  top: InningData;
-  bottom: InningData;
-}
-
 export interface InningData {
   score: number;
-  logData: any[];
+  logData: InningLogData[];
 }
 
 export interface GameResults {
   gameLog: GameLog;
+  gameRecord: TopBottomResult<GameRecord>;
   scoreBoard: TopBottomResult<number[]>;
   hitBoard: TopBottomResult<number[]>;
   outBoard: TopBottomResult<number[]>;
   inningRecords: TopBottomResult<any[]>;
-  score: TopBottomResult<number>;
+  playerResults: TopBottomResult<BattingResult[]>;
+  pitcherResult: TopBottomResult<PitchingResult>;
   wallOff: boolean;
 }
 
@@ -102,6 +107,43 @@ export interface GameLog {
   created: Date;
   updated: Date;
   id: string;
+}
+
+export interface GameRecord {
+  score: number;
+  hit: number;
+  hr: number;
+}
+
+export interface BattingResult {
+  box: number;
+  atBat: number;
+  hit: number;
+  double: number;
+  triple: number;
+  hr: number;
+  fourBall: number;
+  strikeOut: number;
+  batScore: number;
+  sacrificeFly: number;
+  bunt: number;
+  steal: number;
+  stealFailed: number;
+  error: number;
+  ave: string;
+}
+
+export interface PitchingResult {
+  atBat: number;          // 対戦打数の合計
+  hit: number;            // 被安打
+  hr: number;             // 被本塁打
+  fourBall: number;       // 与四球
+  strikeOut: number;      // 奪三振
+  wildPitch: number;
+  outCount: number;       // 打ち取ったアウト数（イニング数の代わり）
+  lossScore: number;      // 失点
+  selfLossScore: number;  // 自責点
+  defAve: string;         // 防御率
 }
 
 export interface TopBottomResult<T> {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from 'ngx-envconfig';
+import { sprintf } from 'sprintf-js';
 
 @Injectable({
   providedIn: 'root'
@@ -30,128 +31,41 @@ export class GameService {
       })
     };
 
-    try {
-      return await this.http.post(url, body, options).toPromise();
-    }
-    catch (e) {
-      console.log(e);
-    }
+    return await this.http.post(url, body, options).toPromise();
   }
 
   /**
-   * これ後で消す
+   * 打率の計算
+   *
+   * @param hit ヒット数
+   * @param atBat 打数
    */
-  async getGameResult(): Promise<any> {
-    // TODO: Dummy
-    return {
-      topTeam: {
-        score: 5,
-        hit: 13,
-        hr: 2,
-        error: 0,
-        team: {
-          name: 'aaa',
-        },
-        owner: {
-          name: 'AAA'
-        },
-        players: [
-          {
-            name: 'abc',
-            batCount: 5,
-            hit: 3,
-            ave: '.600',
-            hr: 1,
-            totalHr: 2,
-            batScore: 3,
-            strikeOut: 1,
-            fourBall: 1,
-            bunt: 0,
-            steal: 0,
-            error: 0,
-          },
-          {
-            name: 'abc',
-            batCount: 5,
-            hit: 3,
-            ave: '.600',
-            hr: 1,
-            totalHr: 2,
-            batScore: 3,
-            strikeOut: 1,
-            fourBall: 1,
-            bunt: 0,
-            steal: 0,
-            error: 0,
-          }
-        ],
-        pitcher: {
-          name: 'cde',
-          outCount: 27,
-          lossScore: 2,
-          hr: 1,
-          hit: 3,
-          strikeOut: 10,
-          fourBall: 2,
-          error: 0,
-          win: 5,
-          lose: 2,
-        }
-      },
-      bottomTeam: {
-        score: 2,
-        hit: 3,
-        hr: 0,
-        error: 1,
-        team: {
-          name: 'ZZZ',
-        },
-        owner: {
-          name: 'xxx'
-        },
-        players: [
-          {
-            name: 'ogj',
-            batCount: 5,
-            hit: 3,
-            ave: '.600',
-            hr: 1,
-            totalHr: 2,
-            batScore: 3,
-            strikeOut: 1,
-            fourBall: 1,
-            bunt: 0,
-            steal: 0,
-            error: 0,
-          },
-          {
-            name: 'fjo',
-            batCount: 5,
-            hit: 3,
-            ave: '.600',
-            hr: 1,
-            totalHr: 2,
-            batScore: 3,
-            strikeOut: 1,
-            fourBall: 1,
-            bunt: 0,
-            steal: 0,
-            error: 0,
-          }
-        ],
-        pitcher: {
-          name: 'uuu',
-          outCount: 24,
-          lossScore: 5,
-          hr: 1,
-          hit: 13,
-          strikeOut: 0,
-          fourBall: 4,
-          error: 0,
-          win: 1,
-          lose: 2,
-        },
-      }
-    };
+  calcAverage(hit: number, atBat: number) {
+    if (hit === 0) {
+      return '.000';
+    }
+
+    if (hit / atBat === 1) {
+      return '1.000';
+    }
+
+    return sprintf('%.03f', hit / atBat).slice(1);
+  }
+
+  /**
+   * 防御率の計算
+   *
+   * @param loseScore 自責点
+   * @param outCount アウト数
+   */
+  calcDefenseAverage(loseScore: number, outCount: number) {
+    if (loseScore === 0) {
+      return '0.00';
+    }
+    else {
+      return sprintf('%.2f', loseScore * 9 * 3 / outCount);
+    }
   }
 }
+
+
