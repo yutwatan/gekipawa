@@ -58,8 +58,15 @@ export class InningResultComponent implements OnInit, OnChanges {
     let logText = '';
 
     if (battingData.steal !== '') {
-      const suffix = battingData.steal === 'succeed' ? '成功' : '失敗＼(^o^)／';
+      const suffix = battingData.steal === 'succeed' ? '' : '<br>失敗＼(^o^)／';
       return battingData.player.name + ' 盗塁' + suffix;
+    }
+    else if (battingData.bunt !== '') {
+      const suffix = battingData.bunt === 'succeed' ? '' : '<br>失敗＼(^o^)／';
+      return '犠打' + suffix;
+    }
+    else if (battingData.sacrificeFly) {
+      return '犠飛';
     }
     else if (battingData.strikeOut) {
       return '三振';
@@ -92,6 +99,9 @@ export class InningResultComponent implements OnInit, OnChanges {
     // アウト
     else if (!battingData.error) {
       logText = 'アウト';
+      if (battingData.out === 2) {
+        logText += '（併殺）';
+      }
     }
 
     // エラー発生時
@@ -104,7 +114,7 @@ export class InningResultComponent implements OnInit, OnChanges {
       if (battingData.fourBall) {
         logText += '<br>押し出し';
       }
-      logText += ' ' + battingData.plusScore + '点追加！';
+      logText += '<br>' + battingData.plusScore + '点追加！';
     }
 
     // サヨナラ時

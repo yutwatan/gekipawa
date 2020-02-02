@@ -237,7 +237,16 @@ export class TeamService {
     });
   }
 
-  calcAverage(a: number, b: number) {
+  calcScoreAverage(scoreSum: number, outCount: number): string {
+    if (scoreSum === 0) {
+      return '0.00';
+    }
+    else {
+      return sprintf('%.2f', scoreSum * 9 * 3 / outCount);
+    }
+  }
+
+  calcAverage(a: number, b: number): string {
     if (a === 0) {
       return '.000';
     }
@@ -249,7 +258,7 @@ export class TeamService {
     return sprintf('%.03f', a / b).slice(1);
   }
 
-  calcDefenseAverage(loseScore: number, outCount: number) {
+  calcDefenseAverage(loseScore: number, outCount: number): string {
     if (loseScore === 0) {
       return '0.00';
     }
@@ -334,7 +343,7 @@ export class TeamService {
       error: teamInfo.teamData[0].error,
       batAve: this.calcAverage(teamInfo.teamData[0].hit, teamInfo.teamData[0].atBat),
       defAve: this.calcDefenseAverage(teamInfo.teamData[0].lossScore, teamInfo.teamData[0].outCount),
-      scoreAve: '5.21', // TODO: 計算する
+      scoreAve: this.calcScoreAverage(teamInfo.teamData[0].score, teamInfo.teamData[0].outCount),
       restGame: this.globalConfig.max_game - (winNum + loseNum),
       typeAttack: teamInfo.typeAttack,
       typeBunt: teamInfo.typeBunt,

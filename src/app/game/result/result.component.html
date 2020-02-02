@@ -19,15 +19,18 @@
       <td *ngFor="let inningScore of scoreBoard?.top">{{inningScore}}</td>
       <td>{{gameRecord?.top.score}}</td>
       <td>{{hitSum?.top}}</td>
-      <td>{{errorSum?.top}}</td>
+      <td>{{playerResultSum?.top.error}}</td>
     </tr>
     <tr>
       <td>{{botTeamInfo?.name}}</td>
-      <td *ngFor="let inningScore of scoreBoard?.bottom">{{inningScore}}</td>
+      <td *ngFor="let inningScore of scoreBoard?.bottom; index as i">
+        {{inningScore}}
+        <span *ngIf="i == scoreBoard?.top.length - 1 && gameRecord?.top.score < gameRecord?.bottom.score">x</span>
+      </td>
       <td *ngIf="scoreBoard?.bottom.length < scoreBoard?.top.length">×</td>
       <td>{{gameRecord?.bottom.score}}</td>
       <td>{{hitSum?.bottom}}</td>
-      <td>{{errorSum?.bottom}}</td>
+      <td>{{playerResultSum?.bottom.error}}</td>
     </tr>
     <tr>
       <td rowspan="2" class="align-middle">安打</td>
@@ -36,7 +39,10 @@
       <td colspan="2" rowspan="2"></td>
     </tr>
     <tr>
-      <td *ngFor="let inningHit of hitBoard?.bottom">{{inningHit}}</td>
+      <td *ngFor="let inningHit of hitBoard?.bottom; index as i">
+        {{inningHit}}
+        <span *ngIf="i == scoreBoard?.top.length - 1 && gameRecord?.top.score < gameRecord?.bottom.score">x</span>
+      </td>
       <td *ngIf="scoreBoard?.bottom.length < scoreBoard?.top.length">×</td>
       <td>{{hitSum?.bottom}}</td>
     </tr>
