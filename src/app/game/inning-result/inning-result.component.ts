@@ -65,11 +65,11 @@ export class InningResultComponent implements OnInit, OnChanges {
       const suffix = battingData.bunt === 'succeed' ? '' : '<br>失敗＼(^o^)／';
       return '犠打' + suffix;
     }
-    else if (battingData.sacrificeFly) {
-      return '犠飛';
-    }
     else if (battingData.strikeOut) {
       return '三振';
+    }
+    else if (battingData.sacrificeFly) {
+      logText = '犠飛';
     }
     else if (battingData.wildPitch) {
       logText = '暴投';

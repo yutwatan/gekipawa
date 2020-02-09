@@ -111,6 +111,7 @@ export class ResultComponent implements OnInit, OnChanges {
       sumPlayerData.strikeOut += player.strikeOut;
       sumPlayerData.fourBall += player.fourBall;
       sumPlayerData.bunt += player.bunt;
+      sumPlayerData.sacrificeFly += player.sacrificeFly;
       sumPlayerData.steal += player.steal;
       sumPlayerData.error += player.error;
     }
@@ -256,6 +257,7 @@ export class ResultComponent implements OnInit, OnChanges {
         strikeOut: 0,
         fourBall: 0,
         bunt: 0,
+        sacrificeFly: 0,
         ave: '',
         totalHr: 0,
         error: 0,
@@ -321,6 +323,7 @@ export interface PlayerResult {
   strikeOut: number;
   fourBall: number;
   bunt: number;
+  sacrificeFly: number;
   steal: number;
   error: number;
   ave: string;
