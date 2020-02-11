@@ -10,6 +10,7 @@ import { HelpComponent } from './help/help.component';
 import { LinkComponent } from './link/link.component';
 import { AddTeamComponent } from './team/add-team/add-team.component';
 import { TeamComponent } from './team/team.component';
+import { GameComponent } from './game/game.component';
 
 @NgModule({
   declarations: [],
@@ -26,6 +27,7 @@ import { TeamComponent } from './team/team.component';
       {path: 'ranking', component: RankingComponent},
       {path: 'record', component: RecordComponent},
       {path: 'top', component: TopComponent},
+      {path: 'game', component: GameComponent},
       {path: '**', redirectTo: '/top'},
     ])
   ],

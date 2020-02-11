@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { TeamData } from './team-data';
 import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ConfigService } from 'ngx-envconfig';
@@ -238,19 +237,28 @@ export class TeamService {
     });
   }
 
-  calcAverage(a: number, b: number) {
+  calcScoreAverage(scoreSum: number, outCount: number): string {
+    if (scoreSum === 0) {
+      return '0.00';
+    }
+    else {
+      return sprintf('%.2f', scoreSum * 9 * 3 / outCount);
+    }
+  }
+
+  calcAverage(a: number, b: number): string {
     if (a === 0) {
       return '.000';
     }
 
-    if (a / (a + b) === 1) {
+    if (a / b === 1) {
       return '1.000';
     }
 
-    return sprintf('%.03f', a / (a + b)).slice(1);
+    return sprintf('%.03f', a / b).slice(1);
   }
 
-  calcDefenseAverage(loseScore: number, outCount: number) {
+  calcDefenseAverage(loseScore: number, outCount: number): string {
     if (loseScore === 0) {
       return '0.00';
     }
@@ -293,7 +301,7 @@ export class TeamService {
         win: winNum,
         lose: loseNum,
         save: winNum - loseNum,
-        winAve: this.calcAverage(winNum, loseNum),
+        winAve: this.calcAverage(winNum, winNum + loseNum),
         hr: teamInfo.teamData[0].hr,
         steal: teamInfo.teamData[0].steal,
         batAve: this.calcAverage(teamInfo.teamData[0].hit, teamInfo.teamData[0].atBat),
@@ -328,14 +336,14 @@ export class TeamService {
       win: winNum,
       lose: loseNum,
       save: winNum - loseNum,
-      winAve: this.calcAverage(winNum, loseNum),
+      winAve: this.calcAverage(winNum, winNum + loseNum),
       hr: teamInfo.teamData[0].hr,
       steal: teamInfo.teamData[0].steal,
       strikeOut: teamInfo.teamData[0].strikeOut,
       error: teamInfo.teamData[0].error,
       batAve: this.calcAverage(teamInfo.teamData[0].hit, teamInfo.teamData[0].atBat),
       defAve: this.calcDefenseAverage(teamInfo.teamData[0].lossScore, teamInfo.teamData[0].outCount),
-      scoreAve: '5.21', // TODO: 計算する
+      scoreAve: this.calcScoreAverage(teamInfo.teamData[0].score, teamInfo.teamData[0].outCount),
       restGame: this.globalConfig.max_game - (winNum + loseNum),
       typeAttack: teamInfo.typeAttack,
       typeBunt: teamInfo.typeBunt,
@@ -372,7 +380,9 @@ export class TeamService {
         meet: playerInfo.meet,
         run: playerInfo.run,
         defense: playerInfo.defense,
-        ave: '.332',  // TODO: 計算する
+        ave: this.calcAverage(playerInfo.battingData[0].hit, playerInfo.battingData[0].atBat),
+        atBat: playerInfo.battingData[0].atBat,
+        hit: playerInfo.battingData[0].hit,
         hr: playerInfo.battingData[0].hr,
         batScore: playerInfo.battingData[0].batScore,
         fourBall: playerInfo.battingData[0].fourBall,
@@ -398,13 +408,20 @@ export class TeamService {
         change: pitcherInfo.change,
         control: pitcherInfo.control,
         defense: pitcherInfo.defense,
-        loseScoreAve: '2.99', // TODO: 計算する
+        ave: this.calcAverage(pitcherInfo.battingData[0].hit, pitcherInfo.battingData[0].atBat),
+        atBat: pitcherInfo.battingData[0].atBat,
+        batHit: pitcherInfo.battingData[0].hit,
+        batHr: pitcherInfo.battingData[0].hr,
+        loseScoreAve: this.calcDefenseAverage(pitcherInfo.pitchingData[0].selfLossScore, pitcherInfo.pitchingData[0].outCount),
         win: pitcherInfo.pitchingData[0].win,
         lose: pitcherInfo.pitchingData[0].lose,
         strikeOut: pitcherInfo.pitchingData[0].strikeOut,
         fourBall: pitcherInfo.pitchingData[0].fourBall,
         hr: pitcherInfo.pitchingData[0].hr,
         error: pitcherInfo.pitchingData[0].error,
+        lossScore: pitcherInfo.pitchingData[0].lossScore,
+        selfLossScore: pitcherInfo.pitchingData[0].selfLossScore,
+        outCount: pitcherInfo.pitchingData[0].outCount,
       });
     }
 

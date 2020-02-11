@@ -6,6 +6,10 @@ export class Pitcher {
   change: number;
   control: number;
   defense: number;
+  ave: string;          // 打率
+  atBat: number;
+  batHit: number;
+  batHr: number;
   loseScoreAve: string;
   win: number;
   lose: number;
@@ -13,4 +17,7 @@ export class Pitcher {
   fourBall: number;
   hr: number;
   error: number;
+  lossScore: number;
+  selfLossScore: number;
+  outCount: number;
 }

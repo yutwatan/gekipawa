@@ -1,0 +1,6 @@
+.card-body {
+  padding: unset;
+}
+.card-body > table {
+  margin-bottom: auto;
+}

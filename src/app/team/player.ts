@@ -8,6 +8,8 @@ export class Player {
   run: number;
   defense: number;
   ave: string;
+  atBat: number;
+  hit: number;
   hr: number;
   batScore: number;
   fourBall: number;

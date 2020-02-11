@@ -1,0 +1,96 @@
+<div class="text-center">
+  <img *ngIf="teamInfo" src="/assets/icons/{{teamInfo?.icon}}" width="80" alt="team_icon">
+  <p>{{teamInfo?.name}}  （{{teamInfo?.owner.name}}）</p>
+  <p>
+    [ {{teamInfo?.game}}試合　{{teamInfo?.win}}勝　{{teamInfo?.lose}}敗 ]
+    <span *ngIf="continueWin !== undefined">（{{continueWin}}連勝中）</span>
+  </p>
+</div>
+
+<div class="text-center mt-5">
+  <h4>【チームデータ】</h4>
+  <table class="table table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+      <th>打率</th>
+      <th>防率</th>
+      <th>得率</th>
+      <th>本塁</th>
+      <th>盗塁</th>
+      <th>失策</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{teamInfo?.batAve}}</td>
+      <td>{{teamInfo?.defAve}}</td>
+      <td>{{teamInfo?.scoreAve}}</td>
+      <td>{{teamInfo?.hr}}</td>
+      <td>{{teamInfo?.steal}}</td>
+      <td>{{teamInfo?.error}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="text-center mt-5">
+  <h4>【スターティング メンバー】</h4>
+  <table class="table table-sm table-hover table-striped table-bordered">
+    <thead class="thead-light">
+    <tr>
+      <th>順</th>
+      <th>位置</th>
+      <th>名前</th>
+      <th>調子</th>
+      <th>打率</th>
+      <th>本</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let player of teamInfo?.players">
+      <td *ngIf="player.order < 9">{{player.order}}</td>
+      <td *ngIf="player.order < 9">{{player.position}}</td>
+      <td *ngIf="player.order < 9">{{player.name}}</td>
+      <td *ngIf="player.order < 9">{{player.condition}}</td>
+      <td *ngIf="player.order < 9">{{player.ave}}</td>
+      <td *ngIf="player.order < 9">{{player.hr}}</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>投</td>
+      <td>{{teamInfo?.pitchers[0].name}}</td>
+      <td>{{teamInfo?.pitchers[0].condition}}</td>
+      <td>{{teamInfo?.pitchers[0].ave}}</td>
+      <td>{{teamInfo?.pitchers[0].batHr}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="text-center mt-5">
+  <h4>【先発投手 成績】</h4>
+  <table class="table table-bordered table-sm">
+    <thead class="thead-light">
+    <tr>
+      <th>防御率</th>
+      <th>勝敗</th>
+      <th>奪三振</th>
+      <th>与四球</th>
+      <th>被本</th>
+      <th>失点</th>
+      <th>自責点</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{teamInfo?.pitchers[0].loseScoreAve}}</td>
+      <td>{{teamInfo?.pitchers[0].win}}勝{{teamInfo?.pitchers[0].lose}}敗</td>
+      <td>{{teamInfo?.pitchers[0].strikeOut}}</td>
+      <td>{{teamInfo?.pitchers[0].fourBall}}</td>
+      <td>{{teamInfo?.pitchers[0].hr}}</td>
+      <td>{{teamInfo?.pitchers[0].lossScore}}</td>
+      <td>{{teamInfo?.pitchers[0].selfLossScore}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

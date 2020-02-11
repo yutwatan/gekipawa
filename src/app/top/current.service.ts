@@ -62,7 +62,7 @@ export class CurrentService {
     return 2;
   }
 
-  async getChampionInfo(): Promise<Champion> {
+  async getCurrent(): Promise<any> {
     const url = this.backendApiConfig.baseurl + '/current';
     let current: any;
 
@@ -73,6 +73,12 @@ export class CurrentService {
     catch (e) {
       console.log(e);
     }
+
+    return current;
+  }
+
+  async getChampionInfo(): Promise<Champion> {
+    const current: any = await this.getCurrent();
 
     let pitcher: any;
     let pitcherData: any;
