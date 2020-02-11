@@ -409,6 +409,8 @@ export class TeamService {
         control: pitcherInfo.control,
         defense: pitcherInfo.defense,
         ave: this.calcAverage(pitcherInfo.battingData[0].hit, pitcherInfo.battingData[0].atBat),
+        atBat: pitcherInfo.battingData[0].atBat,
+        batHit: pitcherInfo.battingData[0].hit,
         batHr: pitcherInfo.battingData[0].hr,
         loseScoreAve: this.calcDefenseAverage(pitcherInfo.pitchingData[0].selfLossScore, pitcherInfo.pitchingData[0].outCount),
         win: pitcherInfo.pitchingData[0].win,

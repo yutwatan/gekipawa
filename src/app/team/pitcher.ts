@@ -7,6 +7,8 @@ export class Pitcher {
   control: number;
   defense: number;
   ave: string;          // 打率
+  atBat: number;
+  batHit: number;
   batHr: number;
   loseScoreAve: string;
   win: number;

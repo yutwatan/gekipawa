@@ -89,7 +89,7 @@
 <div class="my-5">
   <div>
     {{topTeamInfo?.name}} （{{topTeamInfo?.owner.name}}）
-    [ {{topTeamInfo?.game + 1}}試合 {{topTeamInfo?.win}}勝{{topTeamInfo?.lose}}敗 ]
+    [ {{topTeamInfo?.game}}試合 {{topTeamInfo?.win}}勝{{topTeamInfo?.lose}}敗 ]
   </div>
   <table class="table table-sm table-responsive-sm table-bordered table-striped">
     <thead class="thead-light">
@@ -128,7 +128,7 @@
         <td>{{player.steal}}</td>
         <td>{{player.error}}</td>
         <td>{{player.ave}}</td>
-        <td>{{player.hr}}</td>
+        <td>{{topTeamInfo?.players[i].hr}}</td>
       </ng-container>
     </tr>
     <tr>
@@ -146,7 +146,7 @@
       <td>{{playerResult?.top[8].steal}}</td>
       <td>{{playerResult?.top[8].error}}</td>
       <td>{{playerResult?.top[8].ave}}</td>
-      <td>{{playerResult?.top[8].hr}}</td>
+      <td>{{topTeamInfo?.pitchers[0].batHr}}</td>
     </tr>
     <tr>
       <td>計</td>
@@ -241,7 +241,7 @@
         <td>{{player.steal}}</td>
         <td>{{player.error}}</td>
         <td>{{player.ave}}</td>
-        <td>{{player.hr}}</td>
+        <td>{{botTeamInfo?.players[i].hr}}</td>
       </ng-container>
     </tr>
     <tr>
@@ -259,7 +259,7 @@
       <td>{{playerResult?.bottom[8].steal}}</td>
       <td>{{playerResult?.bottom[8].error}}</td>
       <td>{{playerResult?.bottom[8].ave}}</td>
-      <td>{{playerResult?.bottom[8].hr}}</td>
+      <td>{{botTeamInfo?.pitchers[0].batHr}}</td>
     </tr>
     <tr>
       <td>計</td>

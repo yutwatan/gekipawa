@@ -152,11 +152,11 @@ export class ResultComponent implements OnInit, OnChanges {
     const teamInfo = topBottom === 'top' ? this.topTeamInfo : this.botTeamInfo;
 
     for (let i = 0; i < this.playerResult[topBottom].length; i++) {
-      const currentHit = teamInfo.players[i].hit;
+      const currentHit = i === 8 ? teamInfo.pitchers[0].batHit : teamInfo.players[i].hit;
       const gameHit = this.playerResult[topBottom][i].hit;
       const hit = currentHit + gameHit;
 
-      const currentAtBat = teamInfo.players[i].atBat;
+      const currentAtBat = i === 8 ? teamInfo.pitchers[0].atBat : teamInfo.players[i].atBat;
       const gameAtBat = this.playerResult[topBottom][i].atBat;
       const atBat = currentAtBat + gameAtBat;
 
@@ -229,14 +229,24 @@ export class ResultComponent implements OnInit, OnChanges {
    * 選手のさまざまな成績データを抽出
    */
   private getPlayerData(battingResults: InningResult[], topBottom: string): void {
+    const teamInfo = topBottom === 'top' ? this.topTeamInfo : this.botTeamInfo;
 
     for (const batBox of battingResults) {
 
       // ホームラン
       if (batBox.hr) {
+        let homeRunCount;
+
+        if (batBox.order === 9 || batBox.order === 0) {
+          homeRunCount = ++teamInfo.pitchers[0].batHr;
+        }
+        else {
+          homeRunCount = ++teamInfo.players[batBox.order - 1].hr;
+        }
+
         this.hrData[topBottom].push({
           playerName: batBox.player.name,
-          hrCount: batBox.player.hr,
+          hrCount: homeRunCount,
         });
       }
     }
@@ -278,6 +288,8 @@ export class ResultComponent implements OnInit, OnChanges {
       this.winLose.bottom = '負';
       this.topTeamInfo.win++;
       this.botTeamInfo.lose++;
+      this.topTeamInfo.pitchers[0].win++;
+      this.botTeamInfo.pitchers[0].lose++;
     }
     else {
       this.winTeam = botTeamName;
@@ -285,7 +297,12 @@ export class ResultComponent implements OnInit, OnChanges {
       this.winLose.bottom = '勝';
       this.topTeamInfo.lose++;
       this.botTeamInfo.win++;
+      this.topTeamInfo.pitchers[0].lose++;
+      this.botTeamInfo.pitchers[0].win++;
     }
+
+    this.topTeamInfo.game++;
+    this.botTeamInfo.game++;
   }
 }
 
