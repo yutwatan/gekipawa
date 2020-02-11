@@ -175,6 +175,7 @@
             <th>四球</th>
             <th>三振</th>
             <th>犠打</th>
+            <th>犠飛</th>
             <th>盗塁</th>
             <th>失策</th>
           </tr>
@@ -196,6 +197,7 @@
             <td>{{player.fourBall}}</td>
             <td>{{player.strikeOut}}</td>
             <td>{{player.bunt}}</td>
+            <td>{{player.sacrificeFly}}</td>
             <td>{{player.steal}}</td>
             <td>{{player.error}}</td>
           </tr>
@@ -226,6 +228,8 @@
             <th>奪三</th>
             <th>四球</th>
             <th>被本</th>
+            <th>失点</th>
+            <th>自責</th>
             <th>暴投</th>
           </tr>
           </thead>
@@ -246,7 +250,9 @@
             <td>{{pitcher.strikeOut}}</td>
             <td>{{pitcher.fourBall}}</td>
             <td>{{pitcher.hr}}</td>
-            <td>{{pitcher.error}}</td>
+            <td>{{pitcher.lossScore}}</td>
+            <td>{{pitcher.selfLossScore}}</td>
+            <td>{{pitcher.wildPitch}}</td>
           </tr>
           </tbody>
         </table>

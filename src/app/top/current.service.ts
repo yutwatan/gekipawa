@@ -97,7 +97,7 @@ export class CurrentService {
         name: pitcher ? pitcher.name : '-',
         win: pitcherData ? pitcherData.win : 0,
         lose: pitcherData ? pitcherData.lose : 0,
-        defAve: pitcherData ? this.calcDefenseAverage(pitcherData.lossScore, pitcherData.outCount) : '-',
+        defAve: pitcherData ? this.calcDefenseAverage(pitcherData.selfLossScore, pitcherData.outCount) : '-',
         condition: pitcher ? this.playerCondition[pitcher.condition - 1] : '-'
       }
     };

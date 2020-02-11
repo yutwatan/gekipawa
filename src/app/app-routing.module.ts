@@ -29,7 +29,10 @@ import { GameComponent } from './game/game.component';
       {path: 'top', component: TopComponent},
       {path: 'game', component: GameComponent},
       {path: '**', redirectTo: '/top'},
-    ])
+    ], {
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled',
+    })
   ],
   exports: [
     RouterModule

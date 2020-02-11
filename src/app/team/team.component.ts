@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { TeamService } from './team.service';
 import { Title } from '@angular/platform-browser';
 import { TeamInfo } from './team-info';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-team',
@@ -46,6 +47,7 @@ export class TeamComponent implements OnInit, OnDestroy {
 
   constructor(
     private configService: ConfigService,
+    private router: Router,
     private builder: FormBuilder,
     private teamService: TeamService,
     private title: Title,
@@ -92,8 +94,15 @@ export class TeamComponent implements OnInit, OnDestroy {
   /**
    * Confirm game
    */
-  confirmGame() {
+  async confirmGame() {
     console.log('confirmGame() called!');
+    console.log(this.startGameForm.value);
+
+    // Save team data
+    await this.teamService.updateTeam(this.startGameForm, this.teamService.loginTeamIdValue);
+
+    // PlayBall
+    await this.router.navigate(['/game'], { fragment: 'pageTop' });
   }
 
   /**

@@ -15,6 +15,7 @@ export class Player {
   fourBall: number;
   strikeOut: number;
   bunt: number;
+  sacrificeFly: number;
   steal: number;
   error: number;
 }
