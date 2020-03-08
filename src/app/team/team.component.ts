@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ConfigService } from 'ngx-envconfig';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TeamService } from './team.service';
 import { Title } from '@angular/platform-browser';
 import { TeamInfo } from './team-info';
@@ -57,6 +57,8 @@ export class TeamComponent implements OnInit, OnDestroy {
       typeBunt: this.typeBunt,
       typeSteal: this.typeSteal,
       typeMind: this.typeMind,
+      playerOrderArray: this.builder.array([]),
+      pitcherOrderArray: this.builder.array([]),
     });
   }
 
@@ -69,12 +71,48 @@ export class TeamComponent implements OnInit, OnDestroy {
     }
     this.teamInfo = await this.getTeamInfo(this.teamService.loginTeamIdValue);
 
+    this.setPlayerFormArray(this.playerOrderArray);
+    this.setPitcherFormArray(this.pitcherOrderArray);
+
     this.waitMinutes = this.calcWaitMinutes();
   }
 
   ngOnDestroy() {
    console.log('destroy called');
    this.teamService.loginTeamId = this.teamService.loginTeamIdValue;
+  }
+
+  get playerOrderArray(): FormArray {
+    return this.startGameForm.get('playerOrderArray') as FormArray;
+  }
+  get pitcherOrderArray(): FormArray {
+    return this.startGameForm.get('pitcherOrderArray') as FormArray;
+  }
+
+  setPlayerFormArray(formArray: FormArray) {
+    for (let i = 0; i < 12; i++) {
+      formArray.push(this.builder.group({
+        playerOrder: new FormControl(i + 1, [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(12),
+          Validators.pattern(/\d{1,2}/),
+        ]),
+      }));
+    }
+  }
+
+  setPitcherFormArray(formArray: FormArray) {
+    for (let i = 0; i < 6; i++) {
+      formArray.push(this.builder.group({
+        pitcherOrder: new FormControl(i + 13, [
+          Validators.required,
+          Validators.min(13),
+          Validators.max(18),
+          Validators.pattern(/\d{2}/),
+        ]),
+      }));
+    }
   }
 
   /**

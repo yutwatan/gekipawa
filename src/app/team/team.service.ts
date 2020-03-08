@@ -488,6 +488,8 @@ export class TeamService {
       typeBunt: startGameForm.get('typeBunt').value,
       typeSteal: startGameForm.get('typeSteal').value,
       typeMind: startGameForm.get('typeMind').value,
+      playerOrder: startGameForm.get('playerOrderArray').value,
+      pitcherOrder: startGameForm.get('pitcherOrderArray').value,
     };
 
     const url = this.backendApiConfig.baseurl + '/team/' + teamId;

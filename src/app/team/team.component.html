@@ -180,9 +180,14 @@
             <th>失策</th>
           </tr>
           </thead>
-          <tbody>
-          <tr *ngFor="let player of teamInfo?.players">
-            <td>{{player.order}}</td>
+          <tbody formArrayName="playerOrderArray">
+          <tr *ngFor="let player of teamInfo?.players; index as i" [formGroupName]="i">
+            <td>
+              <select name="player_order{{i + 1}}" formControlName="playerOrder">
+                <option *ngFor="let order of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
+                        [value]="order" [selected]="order == player.order">{{order}}</option>
+              </select>
+            </td>
             <td>{{player.position}}</td>
             <td>{{player.name}}</td>
             <td>{{player.condition}}</td>
@@ -233,9 +238,19 @@
             <th>暴投</th>
           </tr>
           </thead>
-          <tbody>
-          <tr *ngFor="let pitcher of teamInfo?.pitchers">
-            <td>{{pitcher.order}}</td>
+          <tbody formArrayName="pitcherOrderArray">
+          <tr *ngFor="let pitcher of teamInfo?.pitchers; index as j" [formGroupName]="j">
+            <td *ngIf="j < 4">
+              <select name="player_order{{pitcher.order}}" formControlName="pitcherOrder">
+                <option *ngFor="let order of [13, 14, 15, 16]"
+                        [value]="order" [selected]="order == pitcher.order">{{order}}</option>
+              </select>
+            </td>
+            <td *ngIf="j >= 4">
+              {{pitcher.order}}
+              <input name="player_order{{pitcher.order}}" formControlName="pitcherOrder"
+                     [value]="pitcher.order" type="hidden">
+            </td>
             <td>投</td>
             <td>{{pitcher.name}}</td>
             <td>{{pitcher.condition}}</td>
