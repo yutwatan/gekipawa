@@ -17,6 +17,7 @@ export class GameComponent implements OnInit {
   continueWin: number;
   gameResults: GameResults;
   inningResults: TopBottomResult<InningData>[];
+  canNotPlay: boolean;
 
   constructor(
     private configService: ConfigService,
@@ -26,12 +27,17 @@ export class GameComponent implements OnInit {
 
   async ngOnInit() {
     this.inningResults = [];
+    this.canNotPlay = false;
 
     const current = await this.currentService.getCurrent();
     this.championTeamId = current.team.id;
     this.continueWin = current.continueWin;
 
-    await this.playBall();
+    if (this.playTeamId === this.championTeamId) {
+      this.canNotPlay = true;
+    } else {
+      await this.playBall();
+    }
   }
 
   /**
@@ -106,7 +112,7 @@ export interface GameLog {
   active: boolean;
   created: Date;
   updated: Date;
-  id: string;
+  id: number;
 }
 
 export interface GameRecord {

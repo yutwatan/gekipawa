@@ -16,6 +16,7 @@ export class Pitcher {
   strikeOut: number;
   fourBall: number;
   hr: number;
+  wildPitch: number;
   error: number;
   lossScore: number;
   selfLossScore: number;

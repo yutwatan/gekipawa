@@ -294,6 +294,7 @@ export class TeamService {
         icon: teamInfo.icon,
         name: teamInfo.name,
         owner: {
+          id: teamInfo.user.id,
           name: teamInfo.user.name,
           password: teamInfo.user.password,
         },
@@ -329,6 +330,7 @@ export class TeamService {
       icon: teamInfo.icon,
       name: teamInfo.name,
       owner: {
+        id: teamInfo.user.id,
         name: teamInfo.user.name,
         password: teamInfo.user.password,
       },
@@ -388,6 +390,7 @@ export class TeamService {
         fourBall: playerInfo.battingData[0].fourBall,
         strikeOut: playerInfo.battingData[0].strikeOut,
         bunt: playerInfo.battingData[0].bunt,
+        sacrificeFly: playerInfo.battingData[0].sacrificeFly,
         steal: playerInfo.battingData[0].steal,
         error: playerInfo.battingData[0].error,
       });
@@ -418,6 +421,7 @@ export class TeamService {
         strikeOut: pitcherInfo.pitchingData[0].strikeOut,
         fourBall: pitcherInfo.pitchingData[0].fourBall,
         hr: pitcherInfo.pitchingData[0].hr,
+        wildPitch: pitcherInfo.pitchingData[0].wildPitch,
         error: pitcherInfo.pitchingData[0].error,
         lossScore: pitcherInfo.pitchingData[0].lossScore,
         selfLossScore: pitcherInfo.pitchingData[0].selfLossScore,
@@ -467,6 +471,36 @@ export class TeamService {
 
     try {
       return await this.http.post(url, teamInfo, options).toPromise();
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
+  /**
+   * Update team params
+   * @param startGameForm Form data
+   * @param teamId Team ID
+   */
+  async updateTeam(startGameForm: FormGroup, teamId: number) {
+    const teamParams = {
+      typeAttack: startGameForm.get('typeAttack').value,
+      typeBunt: startGameForm.get('typeBunt').value,
+      typeSteal: startGameForm.get('typeSteal').value,
+      typeMind: startGameForm.get('typeMind').value,
+      playerOrder: startGameForm.get('playerOrderArray').value,
+      pitcherOrder: startGameForm.get('pitcherOrderArray').value,
+    };
+
+    const url = this.backendApiConfig.baseurl + '/team/' + teamId;
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+
+    try {
+      return await this.http.put(url, teamParams, options).toPromise();
     }
     catch (e) {
       console.log(e);
